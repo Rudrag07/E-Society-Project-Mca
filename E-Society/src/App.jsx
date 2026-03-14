@@ -16,6 +16,8 @@ import SecurityForm from "./Front-End/SecurityForm"
 import ElectricityForm from "./Front-End/ElectricityForm"
 import WaterForm from "./Front-End/WaterForm"
 import { Toaster } from "react-hot-toast";
+import LearnMore from "./Front-End/LernMore"
+
 
 function App() {
   return (
@@ -42,6 +44,7 @@ function App() {
         <Route path="/security" element={<SecurityForm/>} />
         <Route path="/electricity" element={<ElectricityForm/>} />
         <Route path="/waterForm" element={<WaterForm />} />
+        <Route path="/lernmore" element={<LearnMore/>} />
       </Routes>
     </>
   )

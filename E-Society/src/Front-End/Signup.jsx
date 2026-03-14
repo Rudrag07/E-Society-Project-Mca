@@ -79,11 +79,36 @@ const Signup = () => {
               </div>
 
               {/* Phone Field */}
-              <div className="relative group">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-yellow-400 transition-colors" size={18} />
-                <input type="text" placeholder="Phone Number" {...register("phone", { required: "Phone is required" })} className="w-full bg-slate-900/50 border border-slate-700 text-white pl-12 pr-4 py-3.5 rounded-2xl focus:ring-2 focus:ring-yellow-400 outline-none transition-all" />
-              </div>
-
+            <div className="relative group">
+  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-yellow-400 transition-colors" size={18} />
+  <input 
+    type="tel" // 'text' ki jagah 'tel' use karna better hai mobile keyboards ke liye
+    placeholder="Phone Number" 
+    {...register("phone", { 
+      required: "Phone is required",
+      minLength: {
+        value: 10,
+        message: "Phone number must be exactly 10 digits"
+      },
+      maxLength: {
+        value: 10,
+        message: "Phone number cannot exceed 10 digits"
+      },
+      pattern: {
+        value: /^[0-9]*$/,
+        message: "Only numbers are allowed"
+      }
+    })} 
+    className="w-full bg-slate-900/50 border border-slate-700 text-white pl-12 pr-4 py-3.5 rounded-2xl focus:ring-2 focus:ring-yellow-400 outline-none transition-all" 
+  />
+  
+  {/* Error Message Display */}
+  {errors.phone && (
+    <p className="text-red-500 text-xs mt-1 ml-2 italic">
+      {errors.phone.message}
+    </p>
+  )}
+</div>
               {/* Password Field with Eye Icon */}
               <div className="relative group">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-yellow-400 transition-colors" size={18} />

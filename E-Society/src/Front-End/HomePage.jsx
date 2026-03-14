@@ -44,7 +44,7 @@ const HomePage = () => {
                 Get Started <ChevronRight size={22} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </Link>
-            <Link to="/about">
+            <Link to="/lernmore">
               <button className="px-12 py-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-xl font-bold hover:bg-white/10 hover:text-yellow-400 transition-all">
                 Learn More
               </button>
