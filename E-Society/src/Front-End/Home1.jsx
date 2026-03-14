@@ -4,7 +4,8 @@ import { Star } from "lucide-react";
 
 const Home1 = () => {
   return (
-    <div className="bg-slate-50 min-h-screen font-sans overflow-x-hidden">
+   <>
+      <div className="bg-slate-50 min-h-screen font-sans overflow-x-hidden">
       
       {/* --- HERO SECTION --- */}
       <section className="relative h-[75vh] flex items-center justify-center text-center overflow-hidden">
@@ -189,6 +190,38 @@ const Home1 = () => {
         .delay-300 { animation-delay: 0.3s; }
       `}</style>
     </div>
+
+
+    {/* --- FOOTER --- */}
+          <footer className="bg-slate-900 text-slate-300 pt-16 pb-8">
+            <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12 border-b border-slate-800 pb-12">
+              <div className="space-y-4">
+                <h3 className="text-2xl font-black text-white italic">E-SOCIETY</h3>
+                <p className="leading-relaxed">
+                  Redefining society living with smart technology. Trusted by thousands 
+                  of residents across India.
+                </p>
+              </div>
+              <div className="space-y-4">
+                <h4 className="text-lg font-bold text-white uppercase tracking-widest">Quick Navigation</h4>
+                <ul className="grid grid-cols-2 gap-2">
+                  {[ 'About', 'Services', 'Contact'].map((link) => (
+                    <li key={link}><Link to={`/${link.toLowerCase()}`} className="hover:text-blue-400 transition">{link}</Link></li>
+                  ))}
+                </ul>
+              </div>
+              <div className="space-y-4">
+                <h4 className="text-lg font-bold text-white uppercase tracking-widest">Connect</h4>
+                <p className="text-sm">Email: dwarkesh@esociety.com</p>
+                <p className="text-sm">Phone: +91 82007 92488</p>
+                <p className="text-sm">Ahmedabad, Gujarat, India</p>
+              </div>
+            </div>
+            <div className="text-center pt-8 text-xs font-medium tracking-widest uppercase opacity-50">
+              © 2026 E-Society. Crafted with ❤️ By Rudra
+            </div>
+          </footer>
+          </>
   );
 };
 

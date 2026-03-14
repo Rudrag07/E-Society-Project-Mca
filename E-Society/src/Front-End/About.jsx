@@ -159,7 +159,7 @@ const About = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-bold text-white uppercase tracking-widest">Quick Navigation</h4>
             <ul className="grid grid-cols-2 gap-2">
-              {['Home', 'About', 'Services', 'Contact'].map((link) => (
+              {['Home','Services', 'Contact'].map((link) => (
                 <li key={link}><Link to={`/${link.toLowerCase()}`} className="hover:text-blue-400 transition">{link}</Link></li>
               ))}
             </ul>

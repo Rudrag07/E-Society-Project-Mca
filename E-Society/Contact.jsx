@@ -169,7 +169,7 @@ const Contact = () => {
               <li><Link to="/home1" className="hover:text-yellow-400 transition">Home</Link></li>
               <li><Link to="/about" className="hover:text-yellow-400 transition">About</Link></li>
               <li><Link to="/services" className="hover:text-yellow-400 transition">Services</Link></li>
-              <li><Link to="/contact" className="hover:text-yellow-400 transition">Contact</Link></li>
+              {/* <li><Link to="/contact" className="hover:text-yellow-400 transition">Contact</Link></li> */}
             </ul>
           </div>
           <div>
