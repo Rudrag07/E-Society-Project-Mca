@@ -88,10 +88,33 @@ const Contact = () => {
                   <div className="p-4 bg-green-500 rounded-2xl text-white group-hover:scale-110 transition-transform">
                     <MapPin size={24} />
                   </div>
-                  <div>
-                    <h4 className="font-bold text-green-400 text-sm uppercase tracking-widest">Location</h4>
-                    <p className="text-xl font-medium block">Ahmedabad, Gujarat, India</p>
-                  </div>
+                 <div className="space-y-6">
+  {/* Location Text */}
+  {/* {/* <div className="flex items-start gap-4 group">
+    <div className="p-3 bg-green-500/20 rounded-xl text-green-400 group-hover:bg-green-500 group-hover:text-slate-900 transition-all duration-300">
+      <MapPin size={24} />
+    </div> */}
+    <div>
+      <h4 className="font-bold text-green-400 text-sm uppercase tracking-widest">Location</h4>
+      <p className="text-xl font-medium text-white">Ahmedabad, Gujarat, India</p>
+    </div>
+  
+
+  {/* Interactive Google Map */}
+  <div className="w-full h-64 rounded-2xl overflow-hidden border border-white/10 shadow-2xl mt-4">
+    <iframe
+      title="Society Location"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d235014.299110115!2d72.41492991203001!3d23.020181763001273!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e848aba5bd449%3A0x4fcedd11614f6516!2sAhmedabad%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1709456000000!5m2!1sen!2sin"
+      width="100%"
+      height="100%"
+      style={{ border: 0 }}
+      allowFullScreen=""
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+      className="grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+    ></iframe>
+  </div>
+</div>
                 </div>
               </div>
             </div>

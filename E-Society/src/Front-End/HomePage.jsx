@@ -105,13 +105,13 @@ const HomePage = () => {
 
             {/* Column 3: Navigation */}
             <div>
-              <h4 className="text-white font-black uppercase tracking-widest text-xs mb-8 border-l-4 border-yellow-500 pl-3">Navigation</h4>
-              <ul className="space-y-4 text-slate-400 text-sm font-bold uppercase tracking-tighter">
-                <li><Link to="/Signup" className="hover:text-yellow-400 transition-colors">Home</Link></li>
-                <li><Link to="/signup" className="hover:text-yellow-400 transition-colors">Our Vision</Link></li>
-                <li><Link to="/signup" className="hover:text-yellow-400 transition-colors">All Services</Link></li>
-                <li><Link to="/signup" className="hover:text-yellow-400 transition-colors">Contact Support</Link></li>
-              </ul>
+             <h4 className="text-white font-black uppercase tracking-widest text-xs mb-8 border-l-4 border-yellow-500 pl-3">Navigation</h4>
+  <ul className="space-y-4 text-slate-400 text-sm font-bold uppercase tracking-tighter">
+    <li><Link to="/" className="hover:text-yellow-400">Home</Link></li>
+    <li><Link to="/about" className="hover:text-yellow-400">Our Vision</Link></li>
+    <li><Link to="/amenities" className="hover:text-yellow-400">Amenities</Link></li> {/* Protected */}
+    <li><Link to="/contact" className="hover:text-yellow-400">Contact Support</Link></li>
+  </ul>
             </div>
 
             {/* Column 4: Contact */}

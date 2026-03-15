@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import Login from "./Front-End/Login"
 import React from "react"
 import HomePage from "./Front-End/HomePage"
@@ -18,36 +18,111 @@ import WaterForm from "./Front-End/WaterForm"
 import { Toaster } from "react-hot-toast";
 import LearnMore from "./Front-End/LernMore"
 
-
+// --- PROTECTED ROUTE COMPONENT ---
+// Ye check karega ki user logged in hai ya nahi
+const ProtectedRoute = ({ children }) => {
+  // Har baar check karega jab page badlega
+  const isAuthenticated = localStorage.getItem("isLoggedIn") === "true";
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/signup" replace />;
+  }
+  return children;
+};
 function App() {
   return (
     <>
       <Navbar />
-
-      {/* Toast Container */}
       <Toaster position="top-center" />
-    
-      
 
       <Routes>
-        <Route path="/login" element={<Login />} />
+        {/* Public Routes (Sab dekh sakte hain) */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/home1" element={<Home1 />} />
         <Route path="/about" element={<About />} />
-        <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/Home1" element={<Home1/>} />
-        <Route path="/ServiceDetail" element={<ServiceDetail/>} />
-        <Route path="/payments" element={<PaymentHistory/>} />
-        <Route path="/MainServices" element={<MainServices/>} />
-        <Route path="/parking" element={<ParkingForm/>} />
-        <Route path="/security" element={<SecurityForm/>} />
-        <Route path="/electricity" element={<ElectricityForm/>} />
-        <Route path="/waterForm" element={<WaterForm />} />
         <Route path="/lernmore" element={<LearnMore/>} />
+
+        {/* Protected Routes (Sirf Signup ke baad dikhenge) */}
+        {/* <Route 
+          path="/Home1" 
+          element={
+            <ProtectedRoute>
+              <Home1 />
+            </ProtectedRoute>
+          } 
+        /> */}
+        <Route 
+          path="/ServiceDetail" 
+          element={
+            <ProtectedRoute>
+              <ServiceDetail />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/payments" 
+          element={
+            <ProtectedRoute>
+              <PaymentHistory />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/MainServices" 
+          element={
+            <ProtectedRoute>
+              <MainServices />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/parking" 
+          element={
+            <ProtectedRoute>
+              <ParkingForm />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/security" 
+          element={
+            <ProtectedRoute>
+              <SecurityForm />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/electricity" 
+          element={
+            <ProtectedRoute>
+              <ElectricityForm />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/waterForm" 
+          element={
+            <ProtectedRoute>
+              <WaterForm />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Purana services path agar use karna ho toh protected rakha hai */}
+        <Route 
+          path="/services" 
+          element={
+            <ProtectedRoute>
+              <Services />
+            </ProtectedRoute>
+          } 
+        />
       </Routes>
     </>
   )
 }
 
-export default App
+export default App;

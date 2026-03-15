@@ -20,9 +20,17 @@ export default function Login() {
     }
 
     if (user && user.email === email && user.password === password) {
+      // ✅ SUCCESS LOGIC ADDED HERE
+      // 1. isLoggedIn flag ko true karein taaki ProtectedRoute unlock ho jaye
+      localStorage.setItem("isLoggedIn", "true");
+      
       toast.success("🎉 Login Successful");
+
       setTimeout(() => {
+        // 2. User ko direct dashboard/Home1 par bhejein
         navigate("/home1");
+        // 3. Page reload taaki Navbar refresh ho sake
+        window.location.reload(); 
       }, 1500);
     } else {
       toast.error("❌ Invalid Email or Password");
@@ -31,7 +39,6 @@ export default function Login() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center px-4 overflow-hidden bg-slate-950">
-      {/* Toast Container */}
       <Toaster position="top-center" reverseOrder={false} />
 
       {/* --- PREMIUM BACKGROUND --- */}
@@ -42,7 +49,6 @@ export default function Login() {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950"></div>
 
-      {/* Animated Blobs for depth */}
       <div className="absolute top-1/4 -right-20 w-80 h-80 bg-blue-600 rounded-full mix-blend-multiply filter blur-[120px] opacity-20 animate-blob"></div>
       <div className="absolute bottom-1/4 -left-20 w-80 h-80 bg-yellow-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-2000"></div>
 
@@ -61,8 +67,6 @@ export default function Login() {
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
-            
-            {/* Email Field */}
             <div className="relative group">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-yellow-400 transition-colors" size={18} />
               <input
@@ -74,7 +78,6 @@ export default function Login() {
               />
             </div>
 
-            {/* Password Field with Eye Icon */}
             <div className="relative group">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-yellow-400 transition-colors" size={18} />
               <input
@@ -84,7 +87,6 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {/* Password Toggle Button */}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -100,7 +102,6 @@ export default function Login() {
             >
               <LogIn size={20} /> Login
             </button>
-
           </form>
 
           <p className="text-center mt-8 text-slate-400">
@@ -109,11 +110,9 @@ export default function Login() {
               Signup
             </Link>
           </p>
-
         </div>
       </div>
 
-      {/* --- ANIMATIONS --- */}
       <style>{`
         @keyframes blob {
           0% { transform: translate(0px, 0px) scale(1); }
