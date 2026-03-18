@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Target, Eye, ShieldCheck, Zap, Users } from "lucide-react";
 
+
 const About = () => {
   return (
     <div className="bg-slate-50 min-h-screen font-sans selection:bg-blue-100 selection:text-blue-700">

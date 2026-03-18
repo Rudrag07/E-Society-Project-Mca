@@ -39,24 +39,16 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-  // 1. Pehle confirm karein
-  const confirmLogout = window.confirm("Are you sure you want to logout? 🔒");
+    const confirmLogout = window.confirm("Are you sure you want to logout? 🔒");
+    if (confirmLogout) {
+      localStorage.removeItem("isLoggedIn");
+      toast.success("Logged out successfully!");
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1000);
+    }
+  };
 
-  if (confirmLogout) {
-    // 2. LocalStorage clear karein
-    localStorage.removeItem("isLoggedIn");
-    // localStorage.removeItem("user"); // Agar user data bhi hatana ho
-
-    // 3. Success message dikhayein
-    toast.success("Logged out successfully!");
-
-    // 4. Login page par bhej dein aur reload karein
-    setTimeout(() => {
-      window.location.href = "/login";
-    }, 1000);
-  }
-};
-  // Helper for active link style
   const isActive = (path) => location.pathname === path;
 
   return (
