@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   Home,
@@ -9,7 +9,7 @@ import {
   LogOut,
   Menu,
   X,
-  LayoutDashboard
+  Building2 // Building icon use karenge Residence ke liye
 } from "lucide-react";
 
 const Navbar = () => {
@@ -18,7 +18,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Scroll effect for transparency
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -28,9 +27,9 @@ const Navbar = () => {
   }, []);
 
   const checkAuth = (path) => {
-    const user = localStorage.getItem("user");
-    if (!user) {
-      toast.error("Please Register First! 🛡️");
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    if (!isLoggedIn) {
+      toast.error("Please Login/Register First! 🛡️");
       navigate("/signup");
     } else {
       navigate(path);
@@ -44,12 +43,21 @@ const Navbar = () => {
       localStorage.removeItem("isLoggedIn");
       toast.success("Logged out successfully!");
       setTimeout(() => {
-        window.location.href = "/login";
+        navigate("/login");
       }, 1000);
     }
   };
 
   const isActive = (path) => location.pathname === path;
+
+  // Menu items array to keep code clean
+  const menuItems = [
+    { name: "Home", path: "/home1", icon: <Home size={18} /> },
+    { name: "About", path: "/about", icon: <Info size={18} /> },
+    { name: "Services", path: "/services", icon: <Settings size={18} /> },
+    { name: "Residence", path: "/residence", icon: <Building2 size={18} /> }, // Sahi spelling aur icon
+    { name: "Contact", path: "/contact", icon: <Phone size={18} /> },
+  ];
 
   return (
     <nav 
@@ -83,16 +91,12 @@ const Navbar = () => {
 
         {/* --- DESKTOP MENU --- */}
         <div className="hidden md:flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-md">
-          {[
-            { name: "Home", path: "/home1", icon: <Home size={18} /> },
-            { name: "About", path: "/about", icon: <Info size={18} /> },
-            { name: "Services", path: "/services", icon: <Settings size={18} /> },
-            { name: "Contact", path: "/contact", icon: <Phone size={18} /> },
-          ].map((item) => (
+          {menuItems.map((item) => (
             <button
               key={item.name}
+              type="button"
               onClick={() => checkAuth(item.path)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-all duration-300 ${
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-all duration-300 cursor-pointer ${
                 isActive(item.path)
                   ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
                   : "text-slate-300 hover:text-white hover:bg-white/10"
@@ -106,9 +110,10 @@ const Navbar = () => {
           <div className="w-[1px] h-6 bg-white/20 mx-2"></div>
 
           <button
+            type="button"
             onClick={handleLogout}
             className="flex items-center gap-2 bg-yellow-400 text-slate-900 px-6 py-2.5 rounded-xl font-black 
-                       hover:bg-yellow-300 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-yellow-400/20"
+                       hover:bg-yellow-300 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-yellow-400/20 cursor-pointer"
           >
             <LogOut size={18} />
             LOGOUT
@@ -117,7 +122,8 @@ const Navbar = () => {
 
         {/* --- MOBILE TOGGLE --- */}
         <button
-          className="md:hidden p-2 text-white bg-white/10 rounded-xl"
+          type="button"
+          className="md:hidden p-2 text-white bg-white/10 rounded-xl cursor-pointer"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           {menuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -131,23 +137,22 @@ const Navbar = () => {
         }`}
       >
         <div className="bg-slate-900/95 backdrop-blur-2xl border-b border-white/10 p-6 flex flex-col gap-4">
-          {[
-            { name: "Home", path: "/home1", icon: <Home /> },
-            { name: "About", path: "/about", icon: <Info /> },
-            { name: "Services", path: "/services", icon: <Settings /> },
-            { name: "Contact", path: "/contact", icon: <Phone /> },
-          ].map((item) => (
+          {menuItems.map((item) => (
             <button
               key={item.name}
+              type="button"
               onClick={() => checkAuth(item.path)}
-              className="flex items-center gap-4 text-white p-4 rounded-2xl bg-white/5 hover:bg-blue-600 transition-all font-bold"
+              className={`flex items-center gap-4 text-white p-4 rounded-2xl transition-all font-bold cursor-pointer ${
+                isActive(item.path) ? "bg-blue-600" : "bg-white/5 hover:bg-blue-600"
+              }`}
             >
               {item.icon} {item.name}
             </button>
           ))}
           <button
+            type="button"
             onClick={handleLogout}
-            className="flex items-center justify-center gap-3 bg-yellow-400 text-slate-900 p-4 rounded-2xl font-black mt-2"
+            className="flex items-center justify-center gap-3 bg-yellow-400 text-slate-900 p-4 rounded-2xl font-black mt-2 cursor-pointer"
           >
             <LogOut size={20} /> LOGOUT
           </button>
