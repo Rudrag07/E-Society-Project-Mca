@@ -19,7 +19,7 @@ import SecurityForm from "./Front-End/SecurityForm";
 import ElectricityForm from "./Front-End/ElectricityForm";
 import WaterForm from "./Front-End/WaterForm";
 import LearnMore from "./Front-End/LernMore";
-import Payment from "./Front-End/Payment "; 
+// import Payment from "./Front-End/Payment "; 
 import FlatBook from "./Front-End/FlatBook";
 import Residence from "./Front-End/Residence";
 
@@ -67,7 +67,7 @@ function App() {
           
           {[
             { path: "/residence", element: <Residence /> },
-            { path: "/payment", element: <Payment /> },
+            // { path: "/payment", element: <Payment /> },
             { path: "/flatbook", element: <FlatBook /> },
             { path: "/ServiceDetail", element: <ServiceDetail /> },
             { path: "/payments", element: <PaymentHistory /> },

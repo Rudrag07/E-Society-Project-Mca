@@ -1,155 +1,129 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { CheckCircle2, Printer, Share2, ArrowRight, UserCheck, Phone } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle2, Printer, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const FlatBook = () => {
   const navigate = useNavigate();
   const [details, setDetails] = useState(null);
+  const receiptRef = useRef(null);
 
   useEffect(() => {
+    toast.dismiss();
     const lastBooking = JSON.parse(localStorage.getItem('last_pending_booking'));
     if (!lastBooking) {
       navigate('/home1');
-    } else {
-      setDetails(lastBooking);
+      return;
     }
+    setDetails(lastBooking);
+    
+    toast.success("Booking Verified Successfully!", {
+      duration: 5000,
+      icon: '✅',
+      style: { borderRadius: '15px', background: '#0f172a', color: '#fff', border: '1px solid #10b981' },
+    });
   }, [navigate]);
 
-  const handlePrint = () => {
-    window.print();
+  const downloadPDF = async () => {
+    if (!details) return;
+    const loadId = toast.loading("Processing High-Quality PDF...");
+    try {
+      const element = receiptRef.current;
+      const canvas = await html2canvas(element, { scale: 3, useCORS: true, backgroundColor: "#ffffff", windowWidth: 800 });
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Dwarkesh_Receipt_${details.flatNumber}.pdf`);
+      toast.dismiss(loadId);
+      toast.success("PDF Saved!");
+    } catch (err) {
+      toast.dismiss(loadId);
+      toast.error("PDF Failed!");
+    }
   };
 
-  const shareToWhatsApp = () => {
-    const message = `*E-Society Booking Confirmed!*%0A%0A*Owner:* ${details?.fullName}%0A*Unit:* Flat ${details?.flatNumber} / Wing ${details?.wing}%0A%0A*Manager:* Rudra Gelot (+91 8200792488)`;
-    window.open(`https://wa.me/?text=${message}`, '_blank');
+  const formatAmount = (amt) => {
+    const value = parseFloat(amt);
+    return isNaN(value) ? "0" : value.toLocaleString('en-IN');
   };
 
-  const handleBackToDashboard = () => {
-    localStorage.removeItem('last_pending_booking');
-    navigate('/home1');
-  };
+  // 🟢 FIXED LOGIC: Matching Residence.jsx keys
+  const total = parseFloat(details?.totalValue || 0);
+  const paid = parseFloat(details?.receivedAmount || 0);
+  const pending = total - paid;
 
   return (
-    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 pt-16 md:pt-24 font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 md:p-8 font-sans overflow-x-hidden relative">
       <Toaster position="top-center" />
       
-      {/* 🟢 SCREEN VIEW (Hidden during print) */}
-      <div className="print:hidden relative w-full flex justify-center">
-        {/* Decorative Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] md:w-[400px] h-[280px] md:h-[400px] bg-emerald-500/10 blur-[80px] md:blur-[120px] -z-10"></div>
+      <div className="relative w-full max-w-lg z-10">
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="bg-slate-900/80 backdrop-blur-2xl border border-white/10 rounded-[3rem] overflow-hidden shadow-2xl">
+          <div className="p-10 text-center bg-gradient-to-b from-emerald-500/20 to-transparent border-b border-white/5">
+            <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <CheckCircle2 size={40} className="text-slate-950" />
+            </div>
+            <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">Verified</h1>
+            <p className="text-emerald-400 text-[10px] font-bold tracking-[0.3em] uppercase">Dwarkesh E-Society Residency</p>
+          </div>
 
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }} 
-          animate={{ opacity: 1, scale: 1 }} 
-          className="max-w-md w-full"
-        >
-          <div className="bg-slate-900 border border-white/10 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl p-1">
-            
-            {/* Header Section */}
-            <div className="bg-gradient-to-b from-emerald-500/15 to-transparent p-6 md:p-8 text-center">
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4 shadow-lg shadow-emerald-500/20">
-                <CheckCircle2 size={28} className="text-slate-900 md:size-32" />
+          <div className="px-10 pb-12 pt-8 space-y-6">
+            <div className="space-y-4 bg-slate-800/40 p-6 rounded-[2rem] border border-white/5">
+              <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                <span className="text-slate-500 font-bold uppercase text-[9px]">Resident</span>
+                <span className="text-white font-extrabold text-md uppercase">{details?.fullName}</span>
               </div>
-              <h1 className="text-xl md:text-2xl font-black text-white italic tracking-tight uppercase">Confirmed!</h1>
-              <p className="text-slate-500 text-[9px] md:text-[10px] uppercase tracking-[0.2em] mt-1 font-black">E-Society Premium Residency</p>
+              <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                <span className="text-slate-500 font-bold uppercase text-[9px]">Total Value</span>
+                <span className="text-white font-bold">₹{formatAmount(total)}</span>
+              </div>
+              <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                <span className="text-emerald-500 font-bold uppercase text-[9px]">Received ({details?.method})</span>
+                <span className="text-emerald-400 font-bold">₹{formatAmount(paid)}</span>
+              </div>
+              <div className="flex justify-between items-center border-b border-white/5 pb-3">
+                <span className="text-red-500 font-bold uppercase text-[9px]">Balance Pending</span>
+                <span className="text-red-400 font-bold italic">₹{formatAmount(pending)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 font-bold uppercase text-[9px]">Unit</span>
+                <span className="text-amber-500 font-black text-lg">W-{details?.wing} | F-{details?.flatNumber}</span>
+              </div>
             </div>
 
-            <div className="px-5 md:px-8 pb-6 md:pb-8 space-y-4 md:space-y-5">
-              
-              {/* Receipt Details Box */}
-              <div className="bg-slate-950/50 rounded-[1.2rem] md:rounded-[1.5rem] p-4 md:p-5 border border-white/5 space-y-3">
-                <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                  <span className="text-slate-500 text-[9px] font-black uppercase">Owner</span>
-                  <span className="text-white text-xs md:text-sm font-bold uppercase truncate max-w-[150px]">{details?.fullName || "Resident"}</span>
-                </div>
-                <div className="flex justify-between items-center border-b border-white/5 pb-2">
-                  <span className="text-slate-500 text-[9px] font-black uppercase">Unit</span>
-                  <span className="text-amber-500 text-xs md:text-sm font-black uppercase tracking-tight">Wing {details?.wing} - Flat {details?.flatNumber}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-500 text-[9px] font-black uppercase">Status</span>
-                  <span className="text-emerald-500 font-black text-[8px] md:text-[9px] bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 uppercase tracking-widest">Success</span>
-                </div>
-              </div>
-
-              {/* Manager Contact Card */}
-              <div className="bg-white/5 rounded-2xl p-3 md:p-4 border border-white/5 flex items-center gap-3 md:gap-4">
-                <div className="h-8 w-8 md:h-10 md:w-10 bg-slate-800 rounded-full flex items-center justify-center text-amber-500 shrink-0">
-                  <UserCheck size={16} md:size={20} />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-[8px] text-slate-500 font-black uppercase tracking-widest">Building Manager</p>
-                  <p className="text-white text-xs font-bold truncate">Rudra Gelot</p>
-                  <div className="text-slate-400 text-[9px] flex items-center gap-1 mt-0.5">
-                    <Phone size={9} className="text-amber-500" /> +91 8200792488
-                  </div>
-                </div>
-              </div>
-
-              {/* Utility Buttons */}
-              <div className="grid grid-cols-2 gap-2 md:gap-3">
-                <button 
-                  onClick={handlePrint} 
-                  className="flex items-center justify-center gap-2 py-3 bg-white/5 hover:bg-emerald-500/10 hover:text-emerald-500 rounded-xl transition-all text-[9px] md:text-[10px] font-black uppercase text-slate-300 border border-white/5 active:scale-95"
-                >
-                  <Printer size={12} /> Get PDF
-                </button>
-                <button 
-                  onClick={shareToWhatsApp} 
-                  className="flex items-center justify-center gap-2 py-3 bg-white/5 hover:bg-green-500/10 hover:text-green-500 rounded-xl transition-all text-[9px] md:text-[10px] font-black uppercase text-slate-300 border border-white/5 active:scale-95"
-                >
-                  <Share2 size={12} /> WhatsApp
-                </button>
-              </div>
-
-              {/* Action Button */}
-              <button 
-                onClick={handleBackToDashboard}
-                className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-600 text-slate-900 rounded-xl font-black uppercase text-[10px] md:text-xs tracking-[0.15em] flex items-center justify-center gap-2 shadow-xl active:scale-[0.98] transition-all"
-              >
-                Go to Home <ArrowRight size={16} />
-              </button>
-            </div>
+            <button onClick={downloadPDF} className="w-full py-5 bg-emerald-500 text-slate-950 rounded-2xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3">
+              <Printer size={18} /> Get Official PDF
+            </button>
+            <button onClick={() => navigate('/home1')} className="w-full py-5 bg-slate-800 text-white rounded-2xl font-black uppercase text-xs tracking-widest flex items-center justify-center gap-3">
+              Back to Home <ArrowRight size={18} />
+            </button>
           </div>
         </motion.div>
       </div>
 
-      {/* ⚪ PRINT VIEW (Standard A4 formatting) */}
-      <div className="hidden print:block p-8 bg-white text-black font-serif w-full max-w-[800px] mx-auto">
-        <div className="border-b-4 border-emerald-600 pb-4 mb-8 text-center">
-            <h1 className="text-3xl font-bold uppercase tracking-tighter">E-Society Premium Residency</h1>
-            <p className="text-gray-500 uppercase tracking-widest text-[10px] mt-1">Booking Confirmation Receipt</p>
-        </div>
-
-        <div className="space-y-4 mb-10">
-            <div className="flex justify-between border-b pb-2 text-sm uppercase">
-                <span className="text-gray-400 font-bold">Owner:</span>
-                <span className="font-bold">{details?.fullName}</span>
+      {/* --- PDF TEMPLATE (Hidden from UI) --- */}
+      <div style={{ position: 'absolute', left: '-10000px', top: 0 }}>
+        <div ref={receiptRef} style={{ width: '800px', background: 'white', color: '#1e293b', border: '20px solid #065f46', padding: '60px' }}>
+          <h1 style={{ textAlign: 'center', fontSize: '48px', fontWeight: '900', color: '#064e3b', marginBottom: '40px', borderBottom: '4px solid #065f46', paddingBottom: '20px' }}>DWARKESH E-SOCIETY</h1>
+          <div style={{ background: '#f8fafc', padding: '40px', borderRadius: '30px', border: '1px solid #e2e8f0' }}>
+            <h2 style={{ fontSize: '22px', borderBottom: '2px solid #cbd5e1', paddingBottom: '10px' }}>REGISTRY VERIFICATION</h2>
+            <div style={{ marginTop: '20px', fontSize: '18px', display: 'grid', gap: '15px' }}>
+              <p><b>Resident Name:</b> <span style={{textTransform: 'uppercase'}}>{details?.fullName}</span></p>
+              <p><b>Unit Allotted:</b> WING {details?.wing} - FLAT {details?.flatNumber} ({details?.unitType})</p>
+              <p><b>Total Property Value:</b> ₹{formatAmount(total)}/-</p>
+              <p style={{color: '#059669'}}><b>Amount Received:</b> ₹{formatAmount(paid)}/- (Via {details?.method})</p>
+              <p style={{color: '#dc2626', fontSize: '22px'}}><b>Balance Pending:</b> ₹{formatAmount(pending)}/-</p>
+              <p style={{marginTop: '20px', fontSize: '14px', fontStyle: 'italic'}}>Status: Payment Recorded Successfully.</p>
             </div>
-            <div className="flex justify-between border-b pb-2 text-sm uppercase">
-                <span className="text-gray-400 font-bold">Unit:</span>
-                <span className="font-bold text-amber-600">Wing {details?.wing} - Flat {details?.flatNumber}</span>
-            </div>
-            <div className="flex justify-between border-b pb-2 text-sm uppercase">
-                <span className="text-gray-400 font-bold">Status:</span>
-                <span className="font-bold text-emerald-600 tracking-widest">VERIFIED</span>
-            </div>
-            <div className="flex justify-between border-b pb-2 text-sm uppercase">
-                <span className="text-gray-400 font-bold">Date:</span>
-                <span className="font-bold">{new Date().toLocaleDateString()}</span>
-            </div>
-        </div>
-
-        <div className="mt-10 pt-4 border-t border-gray-100">
-            <p className="text-[10px] text-gray-400 font-bold uppercase">Authorized Manager:</p>
-            <p className="text-lg font-bold">Rudra Gelot</p>
-            <p className="text-gray-600 text-sm font-bold tracking-widest">+91 8200792488</p>
-        </div>
-
-        <div className="text-center text-[8px] text-gray-400 uppercase mt-12">
-            * This is an electronically generated system confirmation receipt. *
+          </div>
+          <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <p><b>👤 Rudra Gelot</b><br/>Founder & Admin</p>
+            <div style={{ width: '100px', height: '100px', border: '4px double #065f46', borderRadius: '50%', textAlign: 'center', padding: '15px' }}><b>PAID</b></div>
+          </div>
         </div>
       </div>
     </div>
