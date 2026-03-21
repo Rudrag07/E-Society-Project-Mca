@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion"; // Premium Animations
 import {
   Home,
   Info,
@@ -9,7 +10,8 @@ import {
   LogOut,
   Menu,
   X,
-  Building2 // Building icon use karenge Residence ke liye
+  Building2,
+  Sparkles
 } from "lucide-react";
 
 const Navbar = () => {
@@ -29,7 +31,7 @@ const Navbar = () => {
   const checkAuth = (path) => {
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
     if (!isLoggedIn) {
-      toast.error("Please Login/Register First! 🛡️");
+      toast.error("Security Protocol: Please Login First! 🛡️");
       navigate("/signup");
     } else {
       navigate(path);
@@ -38,7 +40,7 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    const confirmLogout = window.confirm("Are you sure you want to logout? 🔒");
+    const confirmLogout = window.confirm("Are you sure you want to exit the secure portal? 🔒");
     if (confirmLogout) {
       localStorage.removeItem("isLoggedIn");
       toast.success("Logged out successfully!");
@@ -50,12 +52,11 @@ const Navbar = () => {
 
   const isActive = (path) => location.pathname === path;
 
-  // Menu items array to keep code clean
   const menuItems = [
     { name: "Home", path: "/home1", icon: <Home size={18} /> },
     { name: "About", path: "/about", icon: <Info size={18} /> },
     { name: "Services", path: "/services", icon: <Settings size={18} /> },
-    { name: "Residence", path: "/residence", icon: <Building2 size={18} /> }, // Sahi spelling aur icon
+    { name: "Residence", path: "/residence", icon: <Building2 size={18} /> },
     { name: "Contact", path: "/contact", icon: <Phone size={18} /> },
   ];
 
@@ -63,101 +64,118 @@ const Navbar = () => {
     <nav 
       className={`fixed top-0 w-full z-[100] transition-all duration-500 ${
         scrolled 
-          ? "bg-slate-900/80 backdrop-blur-xl shadow-2xl py-3" 
-          : "bg-transparent py-5"
+          ? "bg-[#02040a]/80 backdrop-blur-2xl border-b border-white/5 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)]" 
+          : "bg-transparent py-6"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
         
-        {/* --- LOGO --- */}
-        <div 
+        {/* --- BRANDING LOGO --- */}
+        <motion.div 
+          whileHover={{ scale: 1.05 }}
           onClick={() => navigate("/")}
           className="flex items-center gap-3 cursor-pointer group"
         >
           <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-500"></div>
-            <div className="relative overflow-hidden rounded-full bg-white p-1.5 shadow-xl">
-              <img
-                src="https://cdn-icons-png.flaticon.com/512/1946/1946436.png"
-                alt="Logo"
-                className="h-9 w-9 md:h-10 md:w-10 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12"
-              />
+            <div className="absolute -inset-2 bg-gradient-to-r from-amber-500 to-orange-600 rounded-full blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
+            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-amber-400 to-orange-600 p-[2px]">
+              <div className="bg-[#02040a] rounded-xl p-1.5">
+                <Building2 className="text-amber-500" size={24} />
+              </div>
             </div>
           </div>
-          <h1 className="text-2xl font-black text-white tracking-tighter italic group-hover:text-yellow-400 transition-colors">
-            E-SOCIETY
-          </h1>
-        </div>
+          <div className="flex flex-col">
+            <h1 className="text-xl font-black text-white tracking-tighter leading-none group-hover:text-amber-400 transition-colors">
+              DWARKESH
+            </h1>
+            <span className="text-[8px] font-bold text-amber-500 tracking-[0.4em] uppercase">E-Society</span>
+          </div>
+        </motion.div>
 
-        {/* --- DESKTOP MENU --- */}
-        <div className="hidden md:flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/10 backdrop-blur-md">
+        {/* --- DESKTOP NAVIGATION --- */}
+        <div className="hidden md:flex items-center gap-1 bg-white/[0.03] p-1.5 rounded-2xl border border-white/5 backdrop-blur-md">
           {menuItems.map((item) => (
             <button
               key={item.name}
-              type="button"
               onClick={() => checkAuth(item.path)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold transition-all duration-300 cursor-pointer ${
+              className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-widest transition-all duration-300 ${
                 isActive(item.path)
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
-                  : "text-slate-300 hover:text-white hover:bg-white/10"
+                  ? "text-amber-500"
+                  : "text-slate-400 hover:text-white"
               }`}
             >
-              {item.icon}
-              {item.name}
+              {isActive(item.path) && (
+                <motion.div 
+                  layoutId="nav-active"
+                  className="absolute inset-0 bg-amber-500/10 border border-amber-500/20 rounded-xl"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center gap-2">
+                {item.icon}
+                {item.name}
+              </span>
             </button>
           ))}
           
-          <div className="w-[1px] h-6 bg-white/20 mx-2"></div>
+          <div className="w-[1px] h-6 bg-white/10 mx-2"></div>
 
-          <button
-            type="button"
+          <motion.button
+            whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(245, 158, 11, 0.2)" }}
+            whileTap={{ scale: 0.95 }}
             onClick={handleLogout}
-            className="flex items-center gap-2 bg-yellow-400 text-slate-900 px-6 py-2.5 rounded-xl font-black 
-                       hover:bg-yellow-300 transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-yellow-400/20 cursor-pointer"
+            className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-[#02040a] px-6 py-2.5 rounded-xl font-black text-[10px] tracking-widest uppercase shadow-lg transition-all"
           >
-            <LogOut size={18} />
-            LOGOUT
-          </button>
+            <LogOut size={16} strokeWidth={3} />
+            Logout
+          </motion.button>
         </div>
 
         {/* --- MOBILE TOGGLE --- */}
         <button
-          type="button"
-          className="md:hidden p-2 text-white bg-white/10 rounded-xl cursor-pointer"
+          className="md:hidden p-2.5 text-white bg-white/5 rounded-xl border border-white/10"
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          {menuOpen ? <X size={28} /> : <Menu size={28} />}
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* --- MOBILE MENU --- */}
-      <div 
-        className={`absolute top-full left-0 w-full transition-all duration-500 ease-in-out overflow-hidden ${
-          menuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <div className="bg-slate-900/95 backdrop-blur-2xl border-b border-white/10 p-6 flex flex-col gap-4">
-          {menuItems.map((item) => (
-            <button
-              key={item.name}
-              type="button"
-              onClick={() => checkAuth(item.path)}
-              className={`flex items-center gap-4 text-white p-4 rounded-2xl transition-all font-bold cursor-pointer ${
-                isActive(item.path) ? "bg-blue-600" : "bg-white/5 hover:bg-blue-600"
-              }`}
-            >
-              {item.icon} {item.name}
-            </button>
-          ))}
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="flex items-center justify-center gap-3 bg-yellow-400 text-slate-900 p-4 rounded-2xl font-black mt-2 cursor-pointer"
+      {/* --- MOBILE SIDEBAR MENU --- */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden absolute top-full left-0 w-full overflow-hidden bg-[#02040a]/95 backdrop-blur-3xl border-b border-white/5"
           >
-            <LogOut size={20} /> LOGOUT
-          </button>
-        </div>
-      </div>
+            <div className="p-6 flex flex-col gap-3">
+              {menuItems.map((item) => (
+                <button
+                  key={item.name}
+                  onClick={() => checkAuth(item.path)}
+                  className={`flex items-center justify-between p-4 rounded-2xl transition-all font-black text-xs uppercase tracking-[0.2em] ${
+                    isActive(item.path) 
+                      ? "bg-amber-500/20 text-amber-500 border border-amber-500/30" 
+                      : "bg-white/[0.02] text-slate-400 border border-white/5"
+                  }`}
+                >
+                  <span className="flex items-center gap-4">
+                    {item.icon} {item.name}
+                  </span>
+                  {isActive(item.path) && <Sparkles size={14} />}
+                </button>
+              ))}
+              <button
+                onClick={handleLogout}
+                className="flex items-center justify-center gap-3 bg-gradient-to-r from-amber-500 to-orange-600 text-[#02040a] p-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] mt-2 shadow-xl"
+              >
+                <LogOut size={18} strokeWidth={3} /> Secure Logout
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
-import { Mail, Lock, Eye, EyeOff, LogIn, ShieldCheck } from "lucide-react";
+import { motion } from "framer-motion"; 
+import { Mail, Lock, Eye, EyeOff, LogIn, ShieldCheck, Sparkles, ArrowRight } from "lucide-react";
 
-export default function Login() {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -11,7 +12,6 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!email || !password) {
@@ -20,114 +20,137 @@ export default function Login() {
     }
 
     if (user && user.email === email && user.password === password) {
-      // ✅ SUCCESS LOGIC ADDED HERE
-      // 1. isLoggedIn flag ko true karein taaki ProtectedRoute unlock ho jaye
       localStorage.setItem("isLoggedIn", "true");
-      
-      toast.success("🎉 Login Successful");
+      toast.success("Welcome Back to the Elite Club! 🎉");
 
       setTimeout(() => {
-        // 2. User ko direct dashboard/Home1 par bhejein
         navigate("/home1");
-        // 3. Page reload taaki Navbar refresh ho sake
         window.location.reload(); 
       }, 1500);
     } else {
-      toast.error("❌ Invalid Email or Password");
+      toast.error("❌ Invalid Credentials");
     }
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4 overflow-hidden bg-slate-950">
+    <div className="min-h-screen relative flex items-center justify-center px-4 overflow-hidden bg-[#02040a]">
       <Toaster position="top-center" reverseOrder={false} />
 
-      {/* --- PREMIUM BACKGROUND --- */}
-      <img
-        src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=3840&q=80"
-        alt="society"
-        className="absolute top-0 left-0 w-full h-full object-cover opacity-40"
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950"></div>
-
-      <div className="absolute top-1/4 -right-20 w-80 h-80 bg-blue-600 rounded-full mix-blend-multiply filter blur-[120px] opacity-20 animate-blob"></div>
-      <div className="absolute bottom-1/4 -left-20 w-80 h-80 bg-yellow-500 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-blob animation-delay-2000"></div>
+      {/* --- PREMIUM DYNAMIC BACKGROUND --- */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=3840&q=80"
+          alt="society"
+          className="absolute top-0 left-0 w-full h-full object-cover opacity-20 grayscale"
+        />
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], x: [0, 30, 0] }}
+          transition={{ duration: 8, repeat: Infinity }}
+          className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-yellow-500/10 rounded-full blur-[120px]" 
+        />
+        <motion.div 
+          animate={{ scale: [1, 1.3, 1], x: [0, -30, 0] }}
+          transition={{ duration: 10, repeat: Infinity }}
+          className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-orange-600/10 rounded-full blur-[120px]" 
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#02040a] via-transparent to-[#02040a]"></div>
+      </div>
 
       {/* --- LOGIN CARD --- */}
-      <div className="relative z-10 w-full max-w-md animate-zoom-in">
-        <div className="backdrop-blur-2xl bg-white/10 border border-white/20 shadow-2xl rounded-[2.5rem] p-8 md:p-10">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="relative z-10 w-full max-w-md"
+      >
+        <div className="backdrop-blur-[30px] bg-white/[0.03] border border-white/10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] rounded-[3rem] p-8 md:p-12 relative overflow-hidden">
           
-          <div className="text-center mb-8">
-            <div className="inline-block p-4 bg-yellow-500 rounded-2xl text-slate-900 mb-4 shadow-lg shadow-yellow-500/30">
-              <ShieldCheck size={32} />
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-yellow-500/40 to-transparent" />
+
+          <div className="text-center mb-10">
+            <motion.div 
+              whileHover={{ rotate: 15 }}
+              className="inline-block p-4 bg-gradient-to-br from-yellow-500/20 to-orange-600/20 rounded-2xl text-yellow-500 mb-6 border border-yellow-500/20 shadow-xl shadow-yellow-500/5"
+            >
+              <ShieldCheck size={36} />
+            </motion.div>
+            
+            <div className="flex items-center justify-center gap-2 mb-2">
+               <Sparkles size={12} className="text-yellow-500 animate-pulse" />
+               <span className="text-yellow-500 text-[10px] font-black uppercase tracking-[0.4em]">Resident Authentication</span>
             </div>
-            <h2 className="text-4xl font-black text-white tracking-tight">
-              Welcome <span className="text-yellow-400">Back</span>
+
+            <h2 className="text-4xl font-black text-white tracking-tighter italic uppercase leading-tight">
+              Access <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Portal</span>
             </h2>
-            <p className="text-slate-400 text-xs mt-2 font-bold uppercase tracking-[0.2em]">Login to your society portal</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
-            <div className="relative group">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-yellow-400 transition-colors" size={18} />
-              <input
-                type="email"
-                placeholder="Email Address"
-                className="w-full bg-slate-900/50 border border-slate-700 text-white pl-12 pr-4 py-4 rounded-2xl focus:ring-2 focus:ring-yellow-400 outline-none transition-all placeholder:text-slate-500"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+            <div className="space-y-2 group">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Registry Email</label>
+              <div className="relative">
+                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-yellow-400 transition-colors" size={18} />
+                <input
+                  required
+                  type="email"
+                  placeholder="name@residency.com"
+                  className="w-full bg-white/[0.02] border border-white/5 text-white pl-14 pr-4 py-5 rounded-2xl focus:ring-2 focus:ring-yellow-500/50 focus:bg-white/[0.06] outline-none transition-all placeholder:text-slate-700 font-bold text-sm"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
             </div>
 
-            <div className="relative group">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-yellow-400 transition-colors" size={18} />
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter Password"
-                className="w-full bg-slate-900/50 border border-slate-700 text-white pl-12 pr-12 py-4 rounded-2xl focus:ring-2 focus:ring-yellow-400 outline-none transition-all placeholder:text-slate-500"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-yellow-400 transition-colors"
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
+            <div className="space-y-2 group">
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-4">Secure Key</label>
+              <div className="relative">
+                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-600 group-focus-within:text-yellow-400 transition-colors" size={18} />
+                <input
+                  required
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  className="w-full bg-white/[0.02] border border-white/5 text-white pl-14 pr-14 py-5 rounded-2xl focus:ring-2 focus:ring-yellow-500/50 focus:bg-white/[0.06] outline-none transition-all placeholder:text-slate-700 font-bold text-sm"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-600 hover:text-yellow-400 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(234, 179, 8, 0.2)" }}
+              whileTap={{ scale: 0.98 }}
               type="submit"
-              className="w-full bg-yellow-500 hover:bg-yellow-400 text-black py-4 rounded-2xl font-black transition-all transform active:scale-95 shadow-xl shadow-yellow-500/20 flex items-center justify-center gap-2 text-lg"
+              className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black py-5 rounded-[1.5rem] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 text-xs mt-8 shadow-2xl"
             >
-              <LogIn size={20} /> Login
-            </button>
+              Authorize Login <ArrowRight size={16} strokeWidth={3} />
+            </motion.button>
           </form>
 
-          <p className="text-center mt-8 text-slate-400">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-yellow-400 font-bold hover:underline transition-all">
-              Signup
-            </Link>
-          </p>
+          <div className="mt-10 text-center border-t border-white/5 pt-8">
+            <p className="text-slate-500 text-[10px] font-black tracking-widest uppercase">
+              First Time Resident?{" "}
+              <Link to="/signup" className="ml-2 text-yellow-500 hover:text-white transition-all underline underline-offset-4 decoration-yellow-500/30">
+                Register Node
+              </Link>
+            </p>
+          </div>
         </div>
-      </div>
 
-      <style>{`
-        @keyframes blob {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
-        }
-        @keyframes zoomIn {
-          from { opacity: 0; transform: scale(0.95); }
-          to { opacity: 1; transform: scale(1); }
-        }
-        .animate-blob { animation: blob 7s infinite; }
-        .animation-delay-2000 { animation-delay: 2s; }
-        .animate-zoom-in { animation: zoomIn 0.5s ease-out forwards; }
-      `}</style>
+        <p className="text-center text-slate-700 text-[9px] font-black mt-8 tracking-[0.6em] uppercase flex items-center justify-center gap-3">
+           <span className="w-8 h-[1px] bg-slate-800"></span>
+           Encrypted Session Active
+           <span className="w-8 h-[1px] bg-slate-800"></span>
+        </p>
+      </motion.div>
     </div>
   );
-}
+};
+
+export default Login;

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-import { Mail, Phone, MapPin, Send, ArrowLeft } from "lucide-react";
+import { Mail, Phone, MapPin, Send, ArrowLeft, ChevronRight, MessageSquare } from "lucide-react";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -26,206 +27,196 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen font-sans bg-slate-50 overflow-x-hidden">
+    <div className="min-h-screen font-sans bg-[#02040a] text-slate-200 overflow-x-hidden">
       <Toaster position="top-center" />
 
-      {/* --- HERO & BACKGROUND SECTION --- */}
-      <div
-        className="relative min-h-screen bg-cover bg-center flex items-center py-12 md:py-20"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d')"
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-900/90 via-black/70 to-blue-900/90"></div>
+      {/* --- BACKGROUND DECOR --- */}
+      <div className="fixed inset-0 pointer-events-none -z-10">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/5 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-amber-600/5 blur-[120px] rounded-full" />
+      </div>
 
-        <div className="relative max-w-6xl mx-auto w-full px-4 md:px-6 z-10">
+      <div className="relative max-w-6xl mx-auto w-full px-6 py-12 md:py-24 z-10">
+        
+        {/* --- HERO SECTION --- */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }} 
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-16 md:mb-24"
+        >
+          <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter italic uppercase">
+            Get In <span className="text-amber-500">Touch</span>
+          </h1>
+          <p className="text-slate-500 mt-6 text-sm md:text-lg font-bold uppercase tracking-[0.5em] opacity-60">
+            Premium Support for Premium Living
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch">
           
-          {/* Animated Main Title */}
-          <div className="text-center mb-10 md:mb-16 animate-fade-down">
-            <h1 className="text-4xl md:text-7xl font-black text-white tracking-tight">
-              Get In <span className="text-yellow-400">Touch</span>
-            </h1>
-            <p className="text-blue-100/70 mt-4 text-base md:text-lg font-medium px-4">
-              Have questions? We'd love to hear from you.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 items-stretch">
-            
-            {/* --- INFO CARD (Left Side) --- */}
-            <div className="bg-white/10 backdrop-blur-xl p-6 md:p-10 rounded-[2rem] md:rounded-[2.5rem] border border-white/20 shadow-2xl text-white animate-fade-right">
-              <h2 className="text-2xl md:text-3xl font-black mb-6 border-b border-white/10 pb-4 italic tracking-tighter">
-                Contact Information
+          {/* --- INFO CARD (Left Side) --- */}
+          <motion.div 
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-[#0a0c14] backdrop-blur-3xl p-8 md:p-14 rounded-[3.5rem] border border-white/5 shadow-2xl flex flex-col justify-between"
+          >
+            <div>
+              <h2 className="text-2xl md:text-3xl font-black mb-8 italic tracking-tighter flex items-center gap-4 text-white uppercase">
+                <span className="w-10 h-1px bg-amber-500 inline-block"></span>
+                Inquiry Hub
               </h2>
 
-              <p className="text-blue-50/80 text-base md:text-lg mb-8 leading-relaxed">
-                If you have any questions about E-Society management or need technical support, feel free to reach out.
+              <p className="text-slate-400 text-base md:text-lg mb-12 leading-relaxed font-medium">
+                Whether it's administrative queries or technical society management support, our core team is at your disposal 24/7.
               </p>
 
-              <div className="space-y-6 md:space-y-8">
+              <div className="space-y-10">
                 {/* Email */}
-                <div className="flex items-center gap-4 md:gap-5 group">
-                  <div className="p-3 md:p-4 bg-yellow-400 rounded-2xl text-blue-900 group-hover:scale-110 transition-transform">
-                    <Mail size={20} className="md:w-6 md:h-6" />
+                <div className="flex items-center gap-6 group cursor-pointer">
+                  <div className="p-5 bg-amber-500/10 rounded-2xl text-amber-500 border border-amber-500/20 group-hover:bg-amber-500 group-hover:text-black transition-all duration-500">
+                    <Mail size={24} />
                   </div>
-                  <div className="overflow-hidden">
-                    <h4 className="font-bold text-yellow-400 text-xs uppercase tracking-widest">Email Us</h4>
-                    <a href="mailto:dwarkeshsociety@gmail.com" className="text-sm md:text-xl font-medium hover:underline block truncate">dwarkeshsociety@gmail.com</a>
+                  <div>
+                    <h4 className="font-black text-slate-600 text-[10px] uppercase tracking-[0.3em] mb-1">Official Mail</h4>
+                    <a href="mailto:dwarkeshsociety@gmail.com" className="text-lg md:text-xl font-bold text-white hover:text-amber-500 transition-colors">dwarkeshsociety@gmail.com</a>
                   </div>
                 </div>
 
                 {/* Phone */}
-                <div className="flex items-center gap-4 md:gap-5 group">
-                  <div className="p-3 md:p-4 bg-blue-500 rounded-2xl text-white group-hover:scale-110 transition-transform">
-                    <Phone size={20} className="md:w-6 md:h-6" />
+                <div className="flex items-center gap-6 group cursor-pointer">
+                  <div className="p-5 bg-blue-500/10 rounded-2xl text-blue-500 border border-blue-500/20 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500">
+                    <Phone size={24} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-blue-400 text-xs uppercase tracking-widest">Call Us</h4>
-                    <a href="tel:+918200792488" className="text-sm md:text-xl font-medium hover:underline block">+91 82007 92488</a>
+                    <h4 className="font-black text-slate-600 text-[10px] uppercase tracking-[0.3em] mb-1">Admin Node</h4>
+                    <a href="tel:+918200792488" className="text-lg md:text-xl font-bold text-white hover:text-blue-500 transition-colors">+91 82007 92488</a>
                   </div>
                 </div>
 
-                {/* Location & Map */}
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4 md:gap-5 group">
-                    <div className="p-3 md:p-4 bg-green-500 rounded-2xl text-white group-hover:scale-110 transition-transform">
-                      <MapPin size={20} className="md:w-6 md:h-6" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-green-400 text-xs uppercase tracking-widest">Location</h4>
-                      <p className="text-sm md:text-xl font-medium text-white">Ahmedabad, Gujarat, India</p>
-                    </div>
+                {/* Location */}
+                <div className="flex items-center gap-6 group cursor-pointer">
+                  <div className="p-5 bg-emerald-500/10 rounded-2xl text-emerald-500 border border-emerald-500/20 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-500">
+                    <MapPin size={24} />
                   </div>
-
-                  {/* Responsive Map Container */}
-                  <div className="w-full h-48 md:h-64 rounded-2xl overflow-hidden border border-white/10 shadow-2xl mt-4">
-                    <iframe
-                      title="Society Location"
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d235014.29910624022!2d72.4149272306772!3d23.02018176378415!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e848aba5bd449%3A0x4fcedd11614f6516!2sAhmedabad%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1709123456789!5m2!1sen!2sin"
-                      width="100%"
-                      height="100%"
-                      style={{ border: 0 }}
-                      allowFullScreen=""
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      className="grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
-                    ></iframe>
+                  <div>
+                    <h4 className="font-black text-slate-600 text-[10px] uppercase tracking-[0.3em] mb-1">HQ Location</h4>
+                    <p className="text-lg md:text-xl font-bold text-white">Ahmedabad, Gujarat, India</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* --- FORM CARD (Right Side) --- */}
-            <div className="bg-white p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl animate-fade-left">
-              <h2 className="text-2xl md:text-3xl font-black text-slate-800 mb-6 md:mb-8">Send a Message</h2>
-
-              <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Your Full Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Enter your name"
-                    className="w-full px-5 py-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl bg-slate-50 border border-slate-200 focus:ring-4 focus:ring-blue-100 outline-none transition-all font-medium text-sm md:text-base"
-                  />
+            {/* Subtle Map Placeholder/Link */}
+            <div className="mt-12 w-full h-32 rounded-[2rem] overflow-hidden border border-white/5 grayscale opacity-30 hover:opacity-100 hover:grayscale-0 transition-all duration-700 relative group">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-transparent transition-colors z-10">
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white">View Live Map</span>
                 </div>
+                <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=600" alt="Map" className="w-full h-full object-cover" />
+            </div>
+          </motion.div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Email Address</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="example@mail.com"
-                    className="w-full px-5 py-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl bg-slate-50 border border-slate-200 focus:ring-4 focus:ring-blue-100 outline-none transition-all font-medium text-sm md:text-base"
-                  />
+          {/* --- FORM CARD (Right Side) --- */}
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="bg-slate-950 p-8 md:p-16 rounded-[3.5rem] border border-white/5 shadow-inner"
+          >
+            <div className="flex items-center gap-4 mb-12">
+                <div className="w-12 h-12 bg-amber-500/10 flex items-center justify-center rounded-2xl text-amber-500">
+                    <MessageSquare size={24} />
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Message</label>
-                  <textarea
-                    name="text"
-                    value={formData.text}
-                    onChange={handleChange}
-                    rows="4"
-                    placeholder="How can we help you?"
-                    className="w-full px-5 py-3 md:px-6 md:py-4 rounded-xl md:rounded-2xl bg-slate-50 border border-slate-200 focus:ring-4 focus:ring-blue-100 outline-none transition-all font-medium resize-none text-sm md:text-base"
-                  ></textarea>
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 md:py-5 rounded-xl md:rounded-2xl shadow-xl shadow-blue-200 transition-all active:scale-95 flex items-center justify-center gap-3 text-base md:text-lg"
-                >
-                  <Send size={18} /> Send Feedback
-                </button>
-              </form>
-
-              <div className="mt-6 md:mt-8 pt-6 border-t border-slate-100 text-center">
-                <Link to="/home1" className="inline-flex items-center gap-2 text-slate-400 font-bold hover:text-blue-600 transition-colors text-sm md:text-base">
-                  <ArrowLeft size={16} /> Back to Dashboard
-                </Link>
-              </div>
+                <h2 className="text-2xl md:text-3xl font-black text-white italic tracking-tighter uppercase">Give A Small Feedback</h2>
             </div>
 
-          </div>
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] ml-4">Full Identity</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="EX: RUDRA GELOT"
+                  className="w-full bg-[#0a0c14] px-8 py-6 rounded-3xl border border-white/5 focus:border-amber-500/50 outline-none transition-all font-black text-sm text-white placeholder:text-slate-800 tracking-wider"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] ml-4">Digital Mail</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="IDENTITY@GATEWAY.COM"
+                  className="w-full bg-[#0a0c14] px-8 py-6 rounded-3xl border border-white/5 focus:border-amber-500/50 outline-none transition-all font-black text-sm text-white placeholder:text-slate-800 tracking-wider"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-600 uppercase tracking-[0.3em] ml-4">Transmission Content</label>
+                <textarea
+                  name="text"
+                  value={formData.text}
+                  onChange={handleChange}
+                  rows="5"
+                  placeholder="TYPE YOUR MESSAGE HERE..."
+                  className="w-full bg-[#0a0c14] px-8 py-6 rounded-3xl border border-white/5 focus:border-amber-500/50 outline-none transition-all font-bold text-sm text-white placeholder:text-slate-800 tracking-wider resize-none"
+                ></textarea>
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.02, y: -5 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                className="w-full bg-gradient-to-r from-amber-500 via-orange-600 to-amber-500 text-black font-black py-6 rounded-3xl shadow-[0_20px_40px_rgba(245,158,11,0.15)] flex items-center justify-center gap-4 text-xs uppercase tracking-[0.4em]"
+              >
+                <Send size={18} strokeWidth={3} /> Execute Dispatch
+              </motion.button>
+            </form>
+
+            <div className="mt-12 pt-8 border-t border-white/5 text-center">
+              <Link to="/home1" className="inline-flex items-center gap-3 text-slate-600 font-black hover:text-amber-500 transition-all text-[10px] uppercase tracking-[0.3em]">
+                <ArrowLeft size={16} /> Secure Return to Dashboard
+              </Link>
+            </div>
+          </motion.div>
+
         </div>
       </div>
 
       {/* --- FOOTER --- */}
-      <footer className="bg-slate-900 text-slate-400 pt-12 md:pt-20 pb-10">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 border-b border-white/5 pb-12 md:pb-16">
-          <div className="space-y-4 text-center md:text-left">
-            <h3 className="text-2xl md:text-3xl font-black text-white italic tracking-tighter">E-SOCIETY</h3>
-            <p className="text-sm leading-relaxed">Smart society management system providing seamless services to every doorstep.</p>
+      <footer className="bg-black border-t border-white/5 pt-20 pb-12">
+        <div className="max-w-7xl mx-auto px-10 grid grid-cols-1 md:grid-cols-3 gap-16 pb-16 border-b border-white/5">
+          <div className="space-y-6 text-center md:text-left">
+            <h3 className="text-3xl font-black text-white italic tracking-tighter flex items-center justify-center md:justify-start gap-3">
+                <span className="bg-amber-500 text-black px-3 py-0.5 rounded-lg not-italic">E</span> SOCIETY
+            </h3>
+            <p className="text-xs font-bold text-slate-500 leading-relaxed uppercase tracking-widest opacity-60">Elite Residency Management Framework. Delivering excellence to every square foot.</p>
           </div>
+          
           <div className="text-center md:text-left">
-            <h4 className="text-white font-bold uppercase tracking-widest mb-4 md:mb-6">Explore</h4>
-            <ul className="flex flex-wrap justify-center md:justify-start gap-4 text-sm">
-              <li><Link to="/home1" className="hover:text-yellow-400 transition">Home</Link></li>
-              <li><Link to="/about" className="hover:text-yellow-400 transition">About</Link></li>
-              <li><Link to="/services" className="hover:text-yellow-400 transition">Services</Link></li>
+            <h4 className="text-white text-xs font-black uppercase tracking-[0.4em] mb-8">Navigation</h4>
+            <ul className="space-y-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600">
+              <li><Link to="/home1" className="hover:text-amber-500 transition-colors">Home Core</Link></li>
+              <li><Link to="/about" className="hover:text-amber-500 transition-colors">System Intel</Link></li>
+              <li><Link to="/services" className="hover:text-amber-500 transition-colors">Utility Matrix</Link></li>
             </ul>
           </div>
-          <div className="text-center md:text-left">
-            <h4 className="text-white font-bold uppercase tracking-widest mb-4 md:mb-6">Address</h4>
-            <p className="text-sm">Ahmedabad, Gujarat, India</p>
-            <p className="text-sm mt-2">dwarkeshsociety@gmail.com</p>
+
+          <div className="text-center md:text-right">
+            <h4 className="text-white text-xs font-black uppercase tracking-[0.4em] mb-8">Official Node</h4>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-loose">
+              Sector 7, Ahmedabad Central<br />
+              Gujarat, India IN-380001
+            </p>
           </div>
         </div>
-        <div className="text-center mt-10 text-[9px] md:text-[10px] font-bold tracking-[0.2em] md:tracking-[0.3em] uppercase opacity-30 px-4">
-          © 2026 E-Society. Developed By Rudra
+        
+        <div className="text-center mt-12 text-[10px] font-black tracking-[0.5em] uppercase text-slate-800">
+          © 2026 Core Infrastructure • Developed By Rudra Gelot
         </div>
       </footer>
-
-      {/* --- ANIMATION STYLES --- */}
-      <style>{`
-        @keyframes fadeDown {
-          from { opacity: 0; transform: translateY(-20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeRight {
-          from { opacity: 0; transform: translateX(-30px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        @keyframes fadeLeft {
-          from { opacity: 0; transform: translateX(30px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        .animate-fade-down { animation: fadeDown 0.8s ease-out forwards; }
-        .animate-fade-right { animation: fadeRight 0.8s ease-out forwards; }
-        .animate-fade-left { animation: fadeLeft 0.8s ease-out forwards; }
-        
-        /* Mobile adjustment for animations */
-        @media (max-width: 768px) {
-          .animate-fade-right, .animate-fade-left {
-            animation-name: fadeDown;
-          }
-        }
-      `}</style>
     </div>
   );
 };
