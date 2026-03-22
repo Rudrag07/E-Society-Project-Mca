@@ -2,7 +2,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 
-// Components (Imports same rahenge)
+// Components
 import Navbar from "./Front-End/Navbar";
 import Login from "./Front-End/Login";
 import HomePage from "./Front-End/HomePage";
@@ -19,7 +19,6 @@ import SecurityForm from "./Front-End/SecurityForm";
 import ElectricityForm from "./Front-End/ElectricityForm";
 import WaterForm from "./Front-End/WaterForm";
 import LearnMore from "./Front-End/LernMore";
-// import Payment from "./Front-End/Payment "; 
 import FlatBook from "./Front-End/FlatBook";
 import Residence from "./Front-End/Residence";
 
@@ -27,7 +26,6 @@ import Residence from "./Front-End/Residence";
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("isLoggedIn") === "true";
   
-  // Agar login nahi hai toh Login page par bhejein (Signup par nahi, kyunki user pehle login try karega)
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
@@ -38,8 +36,10 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
 
-  // Har route change par check karega ki user login hai ya nahi
+  // --- MAGIC LOGIC: Har route change par page top par jayega ---
   useEffect(() => {
+    window.scrollTo(0, 0); // Ye line teri scrolling problem fix kar degi
+    
     const authStatus = localStorage.getItem("isLoggedIn") === "true";
     setIsLoggedIn(authStatus);
   }, [location]);
@@ -49,7 +49,6 @@ function App() {
       <Toaster position="top-center" reverseOrder={false} />
 
       {/* --- NAVBAR LOGIC --- */}
-      {/* Agar aap chahte hain ki Login/Signup page par Navbar na dikhe, toh ye condition lagayein */}
       {isLoggedIn && <Navbar />}
       
       <div className={isLoggedIn ? "pt-16 md:pt-20" : ""}> 
@@ -62,12 +61,11 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/lernmore" element={<LearnMore />} />
 
-          {/* --- PROTECTED ROUTES (Login ke baad hi dikhenge) --- */}
+          {/* --- PROTECTED ROUTES --- */}
           <Route path="/home1" element={<ProtectedRoute><Home1 /></ProtectedRoute>} />
           
           {[
             { path: "/residence", element: <Residence /> },
-            // { path: "/payment", element: <Payment /> },
             { path: "/flatbook", element: <FlatBook /> },
             { path: "/ServiceDetail", element: <ServiceDetail /> },
             { path: "/payments", element: <PaymentHistory /> },
@@ -85,7 +83,6 @@ function App() {
             />
           ))}
 
-          {/* Spelling Correction & 404 */}
           <Route path="/residance" element={<Navigate to="/residence" replace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

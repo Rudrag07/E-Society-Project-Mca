@@ -20,13 +20,12 @@ const Home1 = () => {
         </div>
 
         <div className="relative z-10 px-6 max-w-4xl">
-          <h1 className="text-4xl md:text-7xl font-black text-white mb-6 tracking-tight animate-fade-down">
-            Society <span className="text-yellow-500">Amenities</span>
-          </h1>
-          <p className="text-lg md:text-2xl text-slate-300 font-medium leading-relaxed drop-shadow-md animate-fade-up delay-300">
-            Experience the pinnacle of modern living with our 
-            world-class residential facilities.
-          </p>
+          <h1 className="text-4xl md:text-7xl font-black text-white mb-6 tracking-tighter italic uppercase animate-fade-down leading-none">
+  Society <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Privileges</span>
+</h1>
+<p className="text-slate-500 text-xs font-bold tracking-[0.4em] uppercase mb-12">
+  Experience the Gold Standard of Living
+</p>
         </div>
       </section>
 
