@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Printer, ArrowRight, ShieldCheck, Download, Home, Info } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle2, Download, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import jsPDF from 'jspdf';
@@ -12,197 +12,196 @@ const FlatBook = () => {
   const receiptRef = useRef(null);
 
   useEffect(() => {
-    toast.dismiss();
     const lastBooking = JSON.parse(localStorage.getItem('last_pending_booking'));
-    if (!lastBooking) {
-      navigate('/home1');
-      return;
-    }
+    if (!lastBooking) { navigate('/home1'); return; }
     setDetails(lastBooking);
-    
-    toast.success("Booking Verified Successfully!", {
-      duration: 5000,
-      icon: '✅',
-      style: { 
-        borderRadius: '20px', 
-        background: '#0f172a', 
-        color: '#fff', 
-        border: '1px solid #10b981',
-        fontSize: '12px',
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-        letterSpacing: '1px'
-      },
-    });
   }, [navigate]);
-
-  const downloadPDF = async () => {
-    if (!details) return;
-    const loadId = toast.loading("Generating High-Fidelity PDF...");
-    try {
-      const element = receiptRef.current;
-      const canvas = await html2canvas(element, { 
-        scale: 3, 
-        useCORS: true, 
-        backgroundColor: "#ffffff", 
-        windowWidth: 800 
-      });
-      const imgData = canvas.toDataURL('image/png', 1.0);
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`Dwarkesh_Receipt_${details.flatNumber}.pdf`);
-      toast.dismiss(loadId);
-      toast.success("Registry Document Saved!");
-    } catch (err) {
-      toast.dismiss(loadId);
-      toast.error("Generation Failed!");
-    }
-  };
 
   const formatAmount = (amt) => {
     const value = parseFloat(amt);
     return isNaN(value) ? "0" : value.toLocaleString('en-IN');
   };
 
+  const downloadPDF = async () => {
+    if (!details) return;
+    const loadId = toast.loading("Generating Official Document...");
+    try {
+      const element = receiptRef.current;
+      const canvas = await html2canvas(element, { scale: 3, useCORS: true, backgroundColor: "#cdee14" });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Dwarkesh_Residency_${details.flatNumber}.pdf`);
+      toast.dismiss(loadId);
+      toast.success("PDF Saved Successfully!");
+    } catch (err) {
+      toast.dismiss(loadId);
+      toast.error("Failed to generate PDF");
+    }
+  };
+
+  // --- CALCULATIONS FOR GENUINE BREAKDOWN ---
+  const basePrice = details?.unitType === '4BHK' ? 6500000 : 4500000;
+  const gstAmount = details?.unitType === '4BHK' ? 325000 : 225000;
+  
+  // Extra Parking Logic (3rd bike onwards 3000, 2nd car onwards 6000)
+  const extraBikes = details?.twoWheeler > 3 ? details.twoWheeler - 3 : 0;
+  const extraCars = details?.fourWheeler > 1 ? details.fourWheeler - 1 : 0;
+  const bikeCharges = extraBikes * 3000;
+  const carCharges = extraCars * 6000;
+
   const total = parseFloat(details?.totalValue || 0);
-  const paid = parseFloat(details?.receivedAmount || 0);
-  const pending = total - paid;
+  const paid = parseFloat(details?.amountPaid || 0);
+  const pending = parseFloat(details?.balanceDue || 0);
 
   return (
-    <div className="min-h-screen bg-[#02040a] flex items-center justify-center p-4 md:p-10 font-sans overflow-x-hidden relative selection:bg-emerald-500/30">
+    <div className="min-h-screen bg-[#02040a] flex items-center justify-center p-4 md:p-10 font-sans relative overflow-hidden">
       <Toaster position="top-center" />
       
-      {/* BACKGROUND DECOR */}
-      <div className="fixed inset-0 pointer-events-none -z-10">
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-emerald-600/5 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-600/5 blur-[120px] rounded-full" />
-      </div>
-
       <div className="relative w-full max-w-xl z-10">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9, y: 40 }} 
-          animate={{ opacity: 1, scale: 1, y: 0 }} 
-          transition={{ duration: 0.7, ease: "circOut" }}
-          className="bg-[#0a0c14]/80 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] md:rounded-[4rem] overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.6)] relative"
-        >
-          {/* TOP DECORATIVE BAR */}
-          <div className="h-2 w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600" />
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="bg-[#0a0c14]/90 backdrop-blur-2xl border border-white/10 rounded-[3rem] overflow-hidden shadow-2xl">
+          <div className="h-2 w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-blue-500" />
 
-          {/* HEADER SECTION */}
-          <div className="p-8 md:p-14 text-center bg-gradient-to-b from-emerald-500/10 to-transparent">
-            <motion.div 
-               initial={{ scale: 0 }} 
-               animate={{ scale: 1 }} 
-               transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
-               className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-emerald-400 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(16,185,129,0.4)]"
-            >
-              <CheckCircle2 size={45} className="text-slate-950" strokeWidth={2.5} />
-            </motion.div>
-            <h1 className="text-3xl md:text-5xl font-black text-white italic tracking-tighter uppercase mb-2">Registry Confirmed</h1>
-            <div className="flex items-center justify-center gap-2">
-                <ShieldCheck size={14} className="text-emerald-500" />
-                <p className="text-emerald-500/80 text-[10px] md:text-[12px] font-black tracking-[0.4em] uppercase">Secured Ledger Entry</p>
+          {/* UI HEADER */}
+          <div className="p-8 text-center">
+            <div className="w-20 h-20 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 size={40} className="text-black" strokeWidth={3} />
             </div>
+            <h1 className="text-2xl font-black text-white uppercase italic">Dwarkesh Residency</h1>
+            <p className="text-emerald-500 text-[10px] tracking-[0.3em] font-bold uppercase mt-1">Official Registry Confirmed</p>
           </div>
 
-          {/* DETAILS BOX */}
-          <div className="px-6 md:px-14 pb-10 md:pb-16 pt-2 space-y-8">
-            <div className="space-y-1 bg-slate-950/50 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border border-white/5 shadow-inner">
-              
-              <div className="flex flex-col gap-1 border-b border-white/5 pb-5 mb-5">
-                <span className="text-slate-500 font-black uppercase text-[9px] tracking-widest">Legal Owner</span>
-                <span className="text-white font-black text-xl md:text-2xl uppercase tracking-tight italic">{details?.fullName}</span>
+          {/* UI CONTENT */}
+          <div className="px-6 pb-10 space-y-6">
+            <div className="bg-slate-950/50 p-6 rounded-[2.5rem] border border-white/5">
+              <div className="border-b border-white/5 pb-4 mb-4">
+                <span className="text-slate-500 text-[9px] uppercase font-bold">Owner Name</span>
+                <p className="text-white font-black text-xl uppercase italic">{details?.fullName}</p>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
-                <div className="flex flex-col gap-1">
-                  <span className="text-slate-600 font-bold uppercase text-[8px] tracking-widest">Property ID</span>
-                  <span className="text-amber-500 font-black text-lg md:text-xl tabular-nums">W-{details?.wing} | F-{details?.flatNumber}</span>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                  <p className="text-slate-600 text-[8px] uppercase font-bold">Flat No</p>
+                  <p className="text-amber-500 font-black">W-{details?.wing} | F-{details?.flatNumber}</p>
                 </div>
-                <div className="flex flex-col gap-1 text-right">
-                  <span className="text-slate-600 font-bold uppercase text-[8px] tracking-widest">Type</span>
-                  <span className="text-slate-300 font-black text-lg md:text-xl uppercase">{details?.unitType}</span>
+                <div className="text-right">
+                  <p className="text-slate-600 text-[8px] uppercase font-bold">Category</p>
+                  <p className="text-slate-300 font-black uppercase">{details?.unitType}</p>
                 </div>
               </div>
 
-              <div className="pt-6 space-y-4">
-                 <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/5">
-                    <span className="text-slate-400 font-bold text-[10px] uppercase">Market Valuation</span>
-                    <span className="text-white font-black">₹{formatAmount(total)}</span>
-                 </div>
-                 <div className="flex justify-between items-center bg-emerald-500/5 p-4 rounded-2xl border border-emerald-500/10">
-                    <div className="flex flex-col">
-                        <span className="text-emerald-500 font-black text-[10px] uppercase italic">Authorized Payment</span>
-                        <span className="text-emerald-600/60 text-[8px] font-bold uppercase">{details?.method} Gateway</span>
-                    </div>
-                    <span className="text-emerald-400 font-black text-lg">₹{formatAmount(paid)}</span>
-                 </div>
-                 <div className="flex justify-between items-center p-4">
-                    <span className="text-red-500/50 font-black text-[10px] uppercase tracking-widest">Outstanding</span>
-                    <span className="text-red-400/80 font-black italic">₹{formatAmount(pending)}</span>
-                 </div>
+              <div className="space-y-3">
+                <div className="flex justify-between p-3 bg-white/5 rounded-xl">
+                  <span className="text-slate-400 text-[10px] font-bold">TOTAL VALUE</span>
+                  <span className="text-white font-black">₹{formatAmount(total)}</span>
+                </div>
+                <div className="flex justify-between p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                  <span className="text-emerald-500 text-[10px] font-bold uppercase">Amount Received</span>
+                  <span className="text-emerald-400 font-black">₹{formatAmount(paid)}</span>
+                </div>
+                <div className={`flex justify-between p-3 rounded-xl border ${pending > 0 ? 'bg-orange-500/5 border-orange-500/20' : 'bg-blue-500/5 border-blue-500/20'}`}>
+                  <span className={`${pending > 0 ? 'text-orange-500' : 'text-blue-400'} text-[10px] font-bold uppercase`}>
+                    {pending > 0 ? 'Pending Balance' : 'Payment Settled'}
+                  </span>
+                  <span className={`${pending > 0 ? 'text-orange-400' : 'text-blue-400'} font-black`}>₹{formatAmount(pending)}</span>
+                </div>
               </div>
             </div>
 
-            {/* ACTION BUTTONS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <motion.button 
-                   whileHover={{ scale: 1.02 }} 
-                   whileTap={{ scale: 0.98 }}
-                   onClick={downloadPDF} 
-                   className="w-full py-5 md:py-6 bg-emerald-500 text-slate-950 rounded-2xl md:rounded-[2rem] font-black uppercase text-[10px] md:text-[11px] tracking-widest flex items-center justify-center gap-3 shadow-[0_15px_30px_rgba(16,185,129,0.2)]"
-                >
-                  <Download size={18} strokeWidth={3} /> Get Document
-                </motion.button>
-
-                <motion.button 
-                   whileHover={{ scale: 1.02 }} 
-                   whileTap={{ scale: 0.98 }}
-                   onClick={() => navigate('/home1')} 
-                   className="w-full py-5 md:py-6 bg-slate-800/50 hover:bg-slate-800 text-white border border-white/10 rounded-2xl md:rounded-[2rem] font-black uppercase text-[10px] md:text-[11px] tracking-widest flex items-center justify-center gap-3 transition-colors"
-                >
-                  <Home size={18} /> Dashboard
-                </motion.button>
+            <div className="grid grid-cols-2 gap-4">
+                <button onClick={downloadPDF} className="py-5 bg-emerald-500 text-black rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
+                  <Download size={18}/> Get PDF
+                </button>
+                <button onClick={() => navigate('/home1')} className="py-5 bg-slate-800 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
+                  <Home size={18}/> Home
+                </button>
             </div>
-          </div>
-          
-          <div className="bg-slate-950 p-6 text-center border-t border-white/5">
-             <p className="text-slate-600 text-[8px] font-black uppercase tracking-[0.5em]">Digitally Signed By Dwarkesh Infrastructure</p>
           </div>
         </motion.div>
       </div>
 
-      {/* --- PDF TEMPLATE (Hidden from UI) --- */}
+      {/* --- HIDDEN PDF TEMPLATE (Detailed Breakdown Added) --- */}
       <div style={{ position: 'absolute', left: '-10000px', top: 0 }}>
-        <div ref={receiptRef} style={{ width: '800px', background: 'white', color: '#1e293b', border: '20px solid #065f46', padding: '60px', fontFamily: 'sans-serif' }}>
-          <div style={{ border: '2px solid #065f46', padding: '40px', borderRadius: '10px' }}>
-            <h1 style={{ textAlign: 'center', fontSize: '42px', fontWeight: '900', color: '#064e3b', marginBottom: '10px', textTransform: 'uppercase' }}>DWARKESH E-SOCIETY</h1>
-            <p style={{ textAlign: 'center', fontSize: '12px', fontWeight: 'bold', letterSpacing: '4px', color: '#64748b', marginBottom: '40px' }}>OFFICIAL POSSESSION RECEIPT</p>
+        <div ref={receiptRef} style={{ width: '800px', background: 'white', color: 'black', padding: '60px', fontFamily: 'Arial, sans-serif' }}>
+          <div style={{ border: '12px solid #16042e', padding: '40px', position: 'relative' }}>
             
-            <div style={{ background: '#f8fafc', padding: '40px', borderRadius: '20px', border: '1px solid #e2e8f0' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #e2e8f0', paddingBottom: '15px', marginBottom: '20px' }}>
-                <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#64748b' }}>RECEIPT NO: #DWK-{Math.floor(Math.random() * 9000) + 1000}</span>
-                <span style={{ fontSize: '14px', fontWeight: 'bold', color: '#64748b' }}>DATE: {new Date().toLocaleDateString()}</span>
-              </div>
+            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+              <h1 style={{ fontSize: '48px', margin: 0, fontWeight: '900', color: '#ff0a0a' }}>DWARKESH RESIDENCY</h1>
+              <p style={{ letterSpacing: '8px', color: '#253141', fontSize: '14px', marginTop: '10px' }}>PREMIUM LUXURY LIVING</p>
+              <div style={{ height: '4px', width: '100px', background: '#10b981', margin: '20px auto' }}></div>
+            </div>
 
-              <div style={{ display: 'grid', gap: '20px', fontSize: '18px' }}>
-                <p><b>Resident Name:</b> <span style={{textTransform: 'uppercase', color: '#0f172a'}}>{details?.fullName}</span></p>
-                <p><b>Unit Allotted:</b> WING {details?.wing} - FLAT {details?.flatNumber} ({details?.unitType})</p>
-                <p><b>Market Value:</b> ₹{formatAmount(total)}/-</p>
-                <p style={{color: '#059669', background: '#ecfdf5', padding: '10px', borderRadius: '8px'}}><b>Amount Received:</b> ₹{formatAmount(paid)}/- (Via {details?.method})</p>
-                <p style={{color: '#dc2626', fontSize: '24px', marginTop: '10px'}}><b>Balance Due:</b> ₹{formatAmount(pending)}/-</p>
+            <div style={{ marginBottom: '30px' }}>
+              <table style={{ width: '100%', fontSize: '16px', borderCollapse: 'collapse' }}>
+                <tbody>
+                  <tr><td style={{ padding: '5px 0', color: '#1d1c1f' }}>OWNER:</td><td style={{ fontWeight: 'bold', textAlign: 'right', }}>{details?.fullName}</td></tr>
+                  <tr><td style={{ padding: '5px 0', color: '#1b1c1f' }}>UNIT:</td><td style={{ fontWeight: 'bold', textAlign: 'right' }}>W-{details?.wing} | FLAT {details?.flatNumber} ({details?.unitType})</td></tr>
+                  <tr><td style={{ padding: '5px 0', color: '#1b1c1f' }}>DATE:</td><td style={{ fontWeight: 'bold', textAlign: 'right' }}>{new Date().toLocaleDateString('en-IN')}</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* BREAKDOWN TABLE */}
+            <div style={{ marginBottom: '30px' }}>
+              <h4 style={{ fontSize: '14px', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px', marginBottom: '15px' }}>PAYMENT BREAKDOWN</h4>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '12px 0' }}>Base Price ({details?.unitType})</td>
+                  <td style={{ textAlign: 'right', fontWeight: 'bold' }}>₹{formatAmount(basePrice)}</td>
+                </tr>
+                <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '12px 0' }}>GST (5% Government Tax)</td>
+                  <td style={{ textAlign: 'right', fontWeight: 'bold' }}>₹{formatAmount(gstAmount)}</td>
+                </tr>
+                {extraBikes > 0 && (
+                  <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '12px 0' }}>Additional 2-Wheeler ({extraBikes} Unit)</td>
+                    <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#d97706' }}>+ ₹{formatAmount(bikeCharges)}</td>
+                  </tr>
+                )}
+                {extraCars > 0 && (
+                  <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                    <td style={{ padding: '12px 0' }}>Additional 4-Wheeler ({extraCars} Unit)</td>
+                    <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#d97706' }}>+ ₹{formatAmount(carCharges)}</td>
+                  </tr>
+                )}
+                <tr style={{ fontSize: '20px', fontWeight: '900' }}>
+                  <td style={{ padding: '20px 0' }}>TOTAL VALUATION:</td>
+                  <td style={{ textAlign: 'right', padding: '20px 0', color: '#1e293b' }}>₹{formatAmount(total)}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div style={{ background: '#f8fafc', padding: '25px', borderRadius: '15px', marginBottom: '40px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#059669' }}>
+                <span>Amount Received:</span><span style={{ fontWeight: 'bold' }}>₹{formatAmount(paid)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', color: pending > 0 ? '#dc2626' : '#2563eb' }}>
+                <span>{pending > 0 ? 'Pending Balance:' : 'Status:'}</span><span style={{ fontWeight: 'bold' }}>{pending > 0 ? `₹${formatAmount(pending)}` : 'PAID IN FULL'}</span>
               </div>
             </div>
 
-            <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-              <div style={{ fontSize: '14px' }}>
-                <p style={{ marginBottom: '40px' }}>__________________________</p>
-                <p><b>Authorized Signature</b><br/>Rudra Gelot (Admin)</p>
+            <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <p style={{ margin: 0, fontWeight: 'bold', fontSize: '18px' }}>Rudra Gelot</p>
+                <p style={{ margin: 0, fontWeight: 'bold', fontSize: '18px' }}>+91 82007 92488</p>
+                <p style={{ margin: '5px 0', color: '#051224' }}>City: C.G Road,Ahmedabad,Gujrat,380001 </p>
+                <p style={{ margin: '5px 0', color: '#051224' }}>Founder Of,Dwarkesh Residency</p>
+                <div style={{ marginTop: '15px', width: '150px', borderTop: '1px solid black' }}>
+                  <p style={{ fontSize: '13x',color: '#05224b' }}>Approved By</p>
+                </div>
               </div>
-              <div style={{ width: '120px', height: '120px', border: '5px double #065f46', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-15deg)' }}>
-                <span style={{ fontSize: '24px', fontWeight: '900', color: '#065f46' }}>PAID</span>
+
+              <div style={{ 
+                width: '140px', height: '140px', border: '4px double #1e40af', borderRadius: '50%', 
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', 
+                color: '#1e40af', transform: 'rotate(-15deg)', fontWeight: 'bold', textAlign: 'center'
+              }}>
+                <span style={{ fontSize: '15px' }}>DWARKESH </span>
+                <span style={{ fontSize: '20px', color:'green' }}>APPROVED</span>
+                <span style={{ fontSize: '15px' }}>Official Book</span>
               </div>
             </div>
           </div>
