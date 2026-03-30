@@ -50,8 +50,8 @@ const HomePage = () => {
       </div>
 
       {/* --- HERO SECTION --- */}
-      <section className="relative h-[80vh] flex items-center justify-center px-6 overflow-hidden pt-32 pb-20">
-        <div className="absolute inset-0 z-0">
+      <section className="relative h-[100vh] flex items-center justify-center px-6 overflow-hidden pt-32 pb-20">
+        <div className="absolute inset-10 z-0">
           <img
             src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=3840&q=80"
             alt="Society"
@@ -64,7 +64,7 @@ const HomePage = () => {
         <div className="relative z-10 max-w-6xl text-center mx-auto">
           <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-2xl mb-12 animate-fade-down shadow-2xl">
             <Zap className="text-yellow-400 animate-pulse" size={16} />
-            <span className="text-[10px] font-black tracking-[0.5em] uppercase text-white/80">Next-Gen Management Node</span>
+            <span className="text-[15px] font-black tracking-[0.5em] uppercase text-white/80">Next-Gen Management Node</span>
           </div>
 
           {/* THE FIXED SINGLE-LINE MASTER TITLE */}
@@ -74,19 +74,19 @@ const HomePage = () => {
           </h1>
 
           <p className="text-base sm:text-lg md:text-xl text-slate-500 mb-14 max-w-2xl mx-auto font-bold uppercase tracking-widest leading-relaxed animate-fade-up delay-200 opacity-80">
-            Digitalizing urban living with 
-            <span className="text-white border-b-2 border-yellow-500 ml-3 pb-1">Precision Architecture</span> 
+            Smart Living For Modern Societies
+            <span className="text-white border-b-2 border-yellow-500 ml-3 pb-1">Smart Technology</span> 
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-up delay-500">
             <Link to="/signup">
-              <button className="group relative px-10 py-5 bg-yellow-500 rounded-[2rem] text-black text-lg font-black transition-all hover:scale-110 hover:shadow-[0_0_60px_rgba(234,179,8,0.3)] active:scale-95 flex items-center gap-3 overflow-hidden">
-                Enter Portal <ChevronRight size={20} strokeWidth={3} className="group-hover:translate-x-2 transition-transform" />
+              <button className="group relative px-14 py-5 bg-yellow-500 rounded-[2rem] text-black text-lg font-black transition-all hover:scale-110 uppercase hover:shadow-[0_0_60px_rgba(234,179,8,0.3)] active:scale-95 flex items-center gap-3 overflow-hidden">
+                Get Started <ChevronRight size={20} strokeWidth={3} className="group-hover:translate-x-2 transition-transform" />
               </button>
             </Link>
             <Link to="/lernmore">
               <button className="px-10 py-5 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2rem] text-lg font-black uppercase tracking-widest hover:bg-white/10 hover:text-yellow-400 transition-all">
-                The Blueprint
+                Explore Features
               </button>
             </Link>
           </div>

@@ -27,7 +27,7 @@ const FlatBook = () => {
     const loadId = toast.loading("Generating Official Document...");
     try {
       const element = receiptRef.current;
-      const canvas = await html2canvas(element, { scale: 3, useCORS: true, backgroundColor: "#cdee14" });
+      const canvas = await html2canvas(element, { scale: 3, useCORS: true, backgroundColor: "#ffffff" });
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -42,11 +42,10 @@ const FlatBook = () => {
     }
   };
 
-  // --- CALCULATIONS FOR GENUINE BREAKDOWN ---
+  // --- CALCULATIONS ---
   const basePrice = details?.unitType === '4BHK' ? 6500000 : 4500000;
   const gstAmount = details?.unitType === '4BHK' ? 325000 : 225000;
   
-  // Extra Parking Logic (3rd bike onwards 3000, 2nd car onwards 6000)
   const extraBikes = details?.twoWheeler > 3 ? details.twoWheeler - 3 : 0;
   const extraCars = details?.fourWheeler > 1 ? details.fourWheeler - 1 : 0;
   const bikeCharges = extraBikes * 3000;
@@ -122,7 +121,7 @@ const FlatBook = () => {
         </motion.div>
       </div>
 
-      {/* --- HIDDEN PDF TEMPLATE (Detailed Breakdown Added) --- */}
+      {/* --- HIDDEN PDF TEMPLATE --- */}
       <div style={{ position: 'absolute', left: '-10000px', top: 0 }}>
         <div ref={receiptRef} style={{ width: '800px', background: 'white', color: 'black', padding: '60px', fontFamily: 'Arial, sans-serif' }}>
           <div style={{ border: '12px solid #16042e', padding: '40px', position: 'relative' }}>
@@ -147,30 +146,32 @@ const FlatBook = () => {
             <div style={{ marginBottom: '30px' }}>
               <h4 style={{ fontSize: '14px', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px', marginBottom: '15px' }}>PAYMENT BREAKDOWN</h4>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '12px 0' }}>Base Price ({details?.unitType})</td>
-                  <td style={{ textAlign: 'right', fontWeight: 'bold' }}>₹{formatAmount(basePrice)}</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '12px 0' }}>GST (5% Government Tax)</td>
-                  <td style={{ textAlign: 'right', fontWeight: 'bold' }}>₹{formatAmount(gstAmount)}</td>
-                </tr>
-                {extraBikes > 0 && (
+                <tbody>
                   <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px 0' }}>Additional 2-Wheeler ({extraBikes} Unit)</td>
-                    <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#d97706' }}>+ ₹{formatAmount(bikeCharges)}</td>
+                    <td style={{ padding: '12px 0' }}>Base Price ({details?.unitType})</td>
+                    <td style={{ textAlign: 'right', fontWeight: 'bold' }}>₹{formatAmount(basePrice)}</td>
                   </tr>
-                )}
-                {extraCars > 0 && (
                   <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px 0' }}>Additional 4-Wheeler ({extraCars} Unit)</td>
-                    <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#d97706' }}>+ ₹{formatAmount(carCharges)}</td>
+                    <td style={{ padding: '12px 0' }}>GST (5% Government Tax)</td>
+                    <td style={{ textAlign: 'right', fontWeight: 'bold' }}>₹{formatAmount(gstAmount)}</td>
                   </tr>
-                )}
-                <tr style={{ fontSize: '20px', fontWeight: '900' }}>
-                  <td style={{ padding: '20px 0' }}>TOTAL VALUATION:</td>
-                  <td style={{ textAlign: 'right', padding: '20px 0', color: '#1e293b' }}>₹{formatAmount(total)}</td>
-                </tr>
+                  {extraBikes > 0 && (
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '12px 0' }}>Additional 2-Wheeler ({extraBikes} Unit)</td>
+                      <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#d97706' }}>+ ₹{formatAmount(bikeCharges)}</td>
+                    </tr>
+                  )}
+                  {extraCars > 0 && (
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '12px 0' }}>Additional 4-Wheeler ({extraCars} Unit)</td>
+                      <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#d97706' }}>+ ₹{formatAmount(carCharges)}</td>
+                    </tr>
+                  )}
+                  <tr style={{ fontSize: '20px', fontWeight: '900' }}>
+                    <td style={{ padding: '20px 0' }}>TOTAL VALUATION:</td>
+                    <td style={{ textAlign: 'right', padding: '20px 0', color: '#1e293b' }}>₹{formatAmount(total)}</td>
+                  </tr>
+                </tbody>
               </table>
             </div>
 
@@ -187,10 +188,10 @@ const FlatBook = () => {
               <div>
                 <p style={{ margin: 0, fontWeight: 'bold', fontSize: '18px' }}>Rudra Gelot</p>
                 <p style={{ margin: 0, fontWeight: 'bold', fontSize: '18px' }}>+91 82007 92488</p>
-                <p style={{ margin: '5px 0', color: '#051224' }}>City: C.G Road,Ahmedabad,Gujrat,380001 </p>
-                <p style={{ margin: '5px 0', color: '#051224' }}>Founder Of,Dwarkesh Residency</p>
+                <p style={{ margin: '5px 0', color: '#051224' }}>City: C.G Road, Ahmedabad, Gujarat, 380001</p>
+                <p style={{ margin: '5px 0', color: '#051224' }}>Founder Of, Dwarkesh Residency</p>
                 <div style={{ marginTop: '15px', width: '150px', borderTop: '1px solid black' }}>
-                  <p style={{ fontSize: '13x',color: '#05224b' }}>Approved By</p>
+                  <p style={{ fontSize: '13px', color: '#05224b' }}>Approved By</p>
                 </div>
               </div>
 

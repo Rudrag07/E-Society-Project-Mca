@@ -45,30 +45,32 @@ const Signup = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#02040a] p-4 font-sans relative overflow-hidden">
       <Toaster position="top-center" reverseOrder={false} />
       
-      {/* --- PREMIUM DYNAMIC BACKGROUND --- */}
+      {/* --- PREMIUM DYNAMIC BACKGROUND WITH FLAT IMAGE --- */}
       <div className="absolute inset-0 z-0">
-        {/* Animated Orbs */}
+        {/* Background Image with Zoom Animation */}
         <motion.div 
-          animate={{ 
-            scale: [1, 1.2, 1],
-            x: [0, 50, 0],
-            y: [0, -30, 0]
-          }}
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 10, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
+          className="absolute inset-0 z-0"
+        >
+          <img 
+            src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1920" 
+            alt="Luxury Flat" 
+            className="w-full h-full object-cover opacity-40"
+          />
+        </motion.div>
+
+        {/* Gradient Overlays for Readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#02040a] via-transparent to-[#02040a] z-1" />
+        <div className="absolute inset-0 bg-black/40 z-1" />
+
+        {/* Animated Orbs (Kept subtle for extra depth) */}
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], x: [0, 30, 0] }}
           transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-amber-600/10 rounded-full blur-[120px]" 
+          className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-amber-600/20 rounded-full blur-[100px] z-2" 
         />
-        <motion.div 
-          animate={{ 
-            scale: [1, 1.3, 1],
-            x: [0, -40, 0],
-            y: [0, 60, 0]
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-orange-600/10 rounded-full blur-[120px]" 
-        />
-        
-        {/* Subtle Grid Pattern Overlay */}
-        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
       </div>
 
       <motion.div 
@@ -78,13 +80,12 @@ const Signup = () => {
         className="relative z-10 w-full max-w-[480px]"
       >
         {/* Main Card with Glassmorphism */}
-        <div className="bg-white/[0.03] backdrop-blur-[30px] border border-white/10 rounded-[3rem] p-8 md:p-12 shadow-[0_40px_100px_rgba(0,0,0,0.7)] relative overflow-hidden">
+        <div className="bg-black/40 backdrop-blur-[25px] border border-white/10 rounded-[3rem] p-8 md:p-12 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden">
           
-          {/* Subtle top glow line */}
           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
 
           {/* Header */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-10">
             <motion.div 
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.8 }}
@@ -104,79 +105,66 @@ const Signup = () => {
             </h2>
           </div>
 
-          <form onSubmit={handleSignup} className="space-y-6">
-            {/* Input Groups with Enhanced Interactions */}
+          <form onSubmit={handleSignup} className="space-y-5">
             {[
               { label: 'Resident Name', icon: User, placeholder: 'Enter Full Name', field: 'name', type: 'text' },
               { label: 'Official Email', icon: Mail, placeholder: 'name@esociety.com', field: 'email', type: 'email' }
             ].map((input) => (
               <div key={input.field} className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-4">{input.label}</label>
-                <div className="group relative flex items-center bg-white/[0.03] border border-white/5 rounded-2xl transition-all duration-300 focus-within:border-amber-500/50 focus-within:bg-white/[0.07] focus-within:ring-4 ring-amber-500/5">
-                  <input.icon className="absolute left-5 text-slate-600 group-focus-within:text-amber-500 transition-colors" size={20} />
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-4">{input.label}</label>
+                <div className="group relative flex items-center bg-white/[0.05] border border-white/10 rounded-2xl transition-all duration-300 focus-within:border-amber-500/50 focus-within:bg-white/[0.08]">
+                  <input.icon className="absolute left-5 text-slate-500 group-focus-within:text-amber-500 transition-colors" size={20} />
                   <input 
                     required 
                     type={input.type}
                     placeholder={input.placeholder} 
-                    className="w-full bg-transparent p-5 pl-14 text-white outline-none font-bold placeholder:text-slate-700 text-sm"
+                    className="w-full bg-transparent p-5 pl-14 text-white outline-none font-bold placeholder:text-slate-600 text-sm"
                     onChange={(e) => setUser({...user, [input.field]: e.target.value})}
                   />
                 </div>
               </div>
             ))}
 
-            {/* Password Field */}
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-4">Secure Password</label>
-              <div className="group relative flex items-center bg-white/[0.03] border border-white/5 rounded-2xl transition-all duration-300 focus-within:border-amber-500/50 focus-within:bg-white/[0.07] focus-within:ring-4 ring-amber-500/5">
-                <Lock className="absolute left-5 text-slate-600 group-focus-within:text-amber-500 transition-colors" size={20} />
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-4">Secure Password</label>
+              <div className="group relative flex items-center bg-white/[0.05] border border-white/10 rounded-2xl transition-all duration-300 focus-within:border-amber-500/50">
+                <Lock className="absolute left-5 text-slate-500 group-focus-within:text-amber-500 transition-colors" size={20} />
                 <input 
                   required 
                   type={showPassword ? "text" : "password"} 
                   placeholder="••••••••" 
-                  className="w-full bg-transparent p-5 pl-14 pr-14 text-white outline-none font-bold placeholder:text-slate-700 text-sm"
+                  className="w-full bg-transparent p-5 pl-14 pr-14 text-white outline-none font-bold placeholder:text-slate-600 text-sm"
                   onChange={(e) => setUser({...user, password: e.target.value})}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-5 text-slate-600 hover:text-amber-500 transition-colors"
+                  className="absolute right-5 text-slate-500 hover:text-amber-500"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
             
-            {/* Submit Button with Gradient Fill */}
             <motion.button 
-              whileHover={{ scale: 1.02, boxShadow: "0 0 40px rgba(245, 158, 11, 0.2)" }}
+              whileHover={{ scale: 1.02, boxShadow: "0 0 40px rgba(245, 158, 11, 0.3)" }}
               whileTap={{ scale: 0.98 }}
               disabled={loading}
               type="submit" 
-              className={`w-full py-6 rounded-[1.5rem] font-black uppercase tracking-[0.3em] text-[11px] transition-all mt-6 flex items-center justify-center gap-3 overflow-hidden relative ${
+              className={`w-full py-6 rounded-[1.5rem] font-black uppercase tracking-[0.3em] text-[11px] transition-all mt-6 flex items-center justify-center gap-3 relative ${
                 loading 
-                ? 'bg-slate-800 text-slate-500 cursor-not-allowed' 
+                ? 'bg-slate-800 text-slate-500' 
                 : 'bg-gradient-to-br from-amber-400 via-amber-500 to-orange-600 text-black'
               }`}
             >
               <AnimatePresence mode="wait">
                 {loading ? (
-                  <motion.div 
-                    key="loader"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex items-center gap-3 font-bold"
-                  >
+                  <motion.div key="loader" className="flex items-center gap-3">
                     <div className="w-5 h-5 border-[3px] border-black border-t-transparent rounded-full animate-spin" />
                     Syncing Node...
                   </motion.div>
                 ) : (
-                  <motion.div 
-                    key="text"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="flex items-center gap-2"
-                  >
+                  <motion.div key="text" className="flex items-center gap-2">
                     Initialize Account <ArrowRight size={18} strokeWidth={3} />
                   </motion.div>
                 )}
@@ -184,13 +172,12 @@ const Signup = () => {
             </motion.button>
           </form>
 
-          {/* Footer Navigation */}
-          <div className="mt-10 text-center border-t border-white/5 pt-8">
-            <p className="text-slate-500 text-[10px] font-black tracking-widest uppercase">
+          <div className="mt-10 text-center border-t border-white/10 pt-8">
+            <p className="text-slate-400 text-[10px] font-black tracking-widest uppercase">
               Existing Resident?
               <button 
                 onClick={() => navigate('/login')} 
-                className="ml-3 text-amber-500 hover:text-white transition-all underline underline-offset-4 decoration-amber-500/30 hover:decoration-amber-500"
+                className="ml-3 text-amber-500 hover:text-white transition-all underline underline-offset-4"
               >
                 Access Portal
               </button>
@@ -198,9 +185,8 @@ const Signup = () => {
           </div>
         </div>
         
-        {/* Anti-Forgery Token Text */}
         <div className="flex flex-col items-center mt-8 gap-2">
-          <p className="text-slate-700 text-[9px] font-black tracking-[0.6em] uppercase">
+          <p className="text-slate-600 text-[9px] font-black tracking-[0.6em] uppercase">
             Encrypted with 256-bit SSL
           </p>
           <div className="w-1 h-8 bg-gradient-to-b from-amber-500/50 to-transparent" />
