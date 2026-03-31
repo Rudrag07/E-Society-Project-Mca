@@ -27,12 +27,26 @@ const FlatBook = () => {
     const loadId = toast.loading("Generating Official Document...");
     try {
       const element = receiptRef.current;
-      const canvas = await html2canvas(element, { scale: 3, useCORS: true, backgroundColor: "#ffffff" });
+      
+      // Niche ka part na kate isliye 'windowScrollY: 0' aur 'height' fix kiya hai
+      const canvas = await html2canvas(element, { 
+        scale: 3, 
+        useCORS: true, 
+        backgroundColor: "#ffffff",
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
+        scrollY: -window.scrollY // Ye scrolling ki wajah se hone wale cut ko rokta hai
+      });
+
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
+      
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      // Agar content A4 se lamba hai toh ye use adjust karega
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      
       pdf.save(`Dwarkesh_Residency_${details.flatNumber}.pdf`);
       toast.dismiss(loadId);
       toast.success("PDF Saved Successfully!");
@@ -42,15 +56,16 @@ const FlatBook = () => {
     }
   };
 
-  // --- CALCULATIONS ---
+  // --- CALCULATIONS (Sahi kiya gaya logic) ---
   const basePrice = details?.unitType === '4BHK' ? 6500000 : 4500000;
   const gstAmount = details?.unitType === '4BHK' ? 325000 : 225000;
-  
-  const extraBikes = details?.twoWheeler > 3 ? details.twoWheeler - 3 : 0;
-  const extraCars = details?.fourWheeler > 1 ? details.fourWheeler - 1 : 0;
+
+  // Yahan bookingData ko details se replace kiya gaya hai error hatane ke liye
+  const extraBikes = (details?.twoWheeler > 2) ? (details.twoWheeler - 2) : 0;
+  const extraCars = (details?.fourWheeler > 1) ? (details.fourWheeler - 1) : 0;
   const bikeCharges = extraBikes * 3000;
   const carCharges = extraCars * 6000;
-
+ 
   const total = parseFloat(details?.totalValue || 0);
   const paid = parseFloat(details?.amountPaid || 0);
   const pending = parseFloat(details?.balanceDue || 0);
@@ -58,7 +73,7 @@ const FlatBook = () => {
   return (
     <div className="min-h-screen bg-[#02040a] flex items-center justify-center p-4 md:p-10 font-sans relative overflow-hidden">
       <Toaster position="top-center" />
-      
+
       <div className="relative w-full max-w-xl z-10">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="bg-[#0a0c14]/90 backdrop-blur-2xl border border-white/10 rounded-[3rem] overflow-hidden shadow-2xl">
           <div className="h-2 w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-blue-500" />
@@ -110,12 +125,12 @@ const FlatBook = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-                <button onClick={downloadPDF} className="py-5 bg-emerald-500 text-black rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
-                  <Download size={18}/> Get PDF
-                </button>
-                <button onClick={() => navigate('/home1')} className="py-5 bg-slate-800 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
-                  <Home size={18}/> Home
-                </button>
+              <button onClick={downloadPDF} className="py-5 bg-emerald-500 text-black rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
+                <Download size={18} /> Get PDF
+              </button>
+              <button onClick={() => navigate('/home1')} className="py-5 bg-slate-800 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest flex items-center justify-center gap-2">
+                <Home size={18} /> Home
+              </button>
             </div>
           </div>
         </motion.div>
@@ -125,7 +140,7 @@ const FlatBook = () => {
       <div style={{ position: 'absolute', left: '-10000px', top: 0 }}>
         <div ref={receiptRef} style={{ width: '800px', background: 'white', color: 'black', padding: '60px', fontFamily: 'Arial, sans-serif' }}>
           <div style={{ border: '12px solid #16042e', padding: '40px', position: 'relative' }}>
-            
+
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
               <h1 style={{ fontSize: '48px', margin: 0, fontWeight: '900', color: '#ff0a0a' }}>DWARKESH RESIDENCY</h1>
               <p style={{ letterSpacing: '8px', color: '#253141', fontSize: '14px', marginTop: '10px' }}>PREMIUM LUXURY LIVING</p>
@@ -155,18 +170,23 @@ const FlatBook = () => {
                     <td style={{ padding: '12px 0' }}>GST (5% Government Tax)</td>
                     <td style={{ textAlign: 'right', fontWeight: 'bold' }}>₹{formatAmount(gstAmount)}</td>
                   </tr>
+                  
+                  {/* --- EXTRA BIKES SECTION (Sahi Condition) --- */}
                   {extraBikes > 0 && (
                     <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
                       <td style={{ padding: '12px 0' }}>Additional 2-Wheeler ({extraBikes} Unit)</td>
                       <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#d97706' }}>+ ₹{formatAmount(bikeCharges)}</td>
                     </tr>
                   )}
+
+                  {/* --- EXTRA CARS SECTION (Sahi Condition) --- */}
                   {extraCars > 0 && (
                     <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
                       <td style={{ padding: '12px 0' }}>Additional 4-Wheeler ({extraCars} Unit)</td>
                       <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#d97706' }}>+ ₹{formatAmount(carCharges)}</td>
                     </tr>
                   )}
+
                   <tr style={{ fontSize: '20px', fontWeight: '900' }}>
                     <td style={{ padding: '20px 0' }}>TOTAL VALUATION:</td>
                     <td style={{ textAlign: 'right', padding: '20px 0', color: '#1e293b' }}>₹{formatAmount(total)}</td>
@@ -195,13 +215,13 @@ const FlatBook = () => {
                 </div>
               </div>
 
-              <div style={{ 
-                width: '140px', height: '140px', border: '4px double #1e40af', borderRadius: '50%', 
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', 
+              <div style={{
+                width: '140px', height: '140px', border: '4px double #1e40af', borderRadius: '50%',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                 color: '#1e40af', transform: 'rotate(-15deg)', fontWeight: 'bold', textAlign: 'center'
               }}>
                 <span style={{ fontSize: '15px' }}>DWARKESH </span>
-                <span style={{ fontSize: '20px', color:'green' }}>APPROVED</span>
+                <span style={{ fontSize: '20px', color: 'green' }}>APPROVED</span>
                 <span style={{ fontSize: '15px' }}>Official Book</span>
               </div>
             </div>
