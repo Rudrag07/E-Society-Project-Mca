@@ -5,8 +5,32 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 const Residence = () => {
-  const navigate = useNavigate();
-  const currentUserEmail = localStorage.getItem('userEmail') || "";
+  const userObj = JSON.parse(localStorage.getItem('currentUser')) || {};
+
+const navigate = useNavigate();
+
+  // --- LATEST LOGIN EMAIL DETECTOR ---
+  const getCurrentEmail = () => {
+    // Pehle 'user' key check karega (kyunki naya signup yahi save ho raha hai)
+    const activeUser = localStorage.getItem('user');
+    const adminUser = localStorage.getItem('currentUser');
+    
+    try {
+      if (activeUser) {
+        const parsed = JSON.parse(activeUser);
+        if (parsed.email) return parsed.email.toLowerCase().trim();
+      }
+      if (adminUser) {
+        const parsed = JSON.parse(adminUser);
+        if (parsed.email) return parsed.email.toLowerCase().trim();
+      }
+    } catch (e) {
+      return activeUser || adminUser || "";
+    }
+    return "";
+  };
+
+  const currentUserEmail = getCurrentEmail();
 
   const wingConfig = {
     'A': { min: 1, max: 100, type: '3BHK', label: 'Wing A (1 to 100/3BHK)' },
@@ -254,10 +278,31 @@ const Residence = () => {
           >
              {isVerifying ? "Processing Global Registry..." : isAlreadyBooked ? "Flat Already Taken" : "Finalize Dwarkesh Booking"}
           </button>
-        </form>
+        
 
-        {currentUserEmail === "rudragelot212@gmail.com" && (
-           <button onClick={() => {if(window.confirm("Nuclear Option? Reset all data?")) { localStorage.removeItem('booked_flats_list'); localStorage.removeItem('society_residents'); setBookedFlats([]); window.location.reload(); }}} className="w-full py-4 text-[10px] font-black text-red-500/40 hover:text-red-500 transition-all uppercase flex items-center justify-center gap-2"><Trash2 size={12}/> Reset Booking Data</button>
+</form>
+
+       {/* --- NUCLEAR OPTION: Sab kuch saaf karne ke liye --- */}
+        {localStorage.getItem('isLoggedIn') === 'true' && currentUserEmail === "rudragelot212@gmail.com" && (
+           <button 
+             type="button"
+             onClick={() => {
+               if(window.confirm("WARNING: This will wipe EVERYTHING (Gym, Maintenance, Bookings, Users). You will be logged out. Proceed?")) { 
+                 
+                 // 1. Saara LocalStorage saaf karega (Gym, Payments, Sab kuch)
+                 localStorage.clear(); 
+                 
+                 // 2. State ko turant khali karega
+                 if (typeof setBookedFlats === 'function') setBookedFlats([]); 
+                 
+                 // 3. Wapas login page par bhej dega kyunki ab koi user nahi bacha
+                 window.location.href = "/"; 
+               }
+             }} 
+             className="w-full py-4 mt-6 text-[10px] font-black text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all uppercase flex items-center justify-center gap-2 rounded-2xl bg-red-500/5 shadow-lg shadow-red-900/5"
+           >
+             <Trash2 size={12}/> Nuclear Option: Wipe All Society Data
+           </button>
         )}
       </div>
     </div>

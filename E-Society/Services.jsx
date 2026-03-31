@@ -320,7 +320,7 @@ const Services = () => {
         @media (max-width: 640px) { .custom-scroll { scrollbar-width: none; } }
       `}</style>
     </div>
-  );
+);
 };
 
 export default Services;
